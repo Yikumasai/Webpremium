@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>链接预加载器</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="icons/icon32.png" alt="图标" class="icon">
+            <h1>链接预加载器</h1>
+            <button id="themeToggle" class="theme-toggle" title="切换主题">🌓</button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="settings">设置</button>
+            <button class="tab-btn" data-tab="stats">统计</button>
+            <button class="tab-btn" data-tab="rules">网站规则</button>
+        </div>
+        
+        <div class="content">
+            <!-- 设置标签页 -->
+            <div class="tab-content active" id="settings-tab">
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="enablePreload" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="setting-label">启用预加载</span>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label for="hoverDelay">悬停延迟 (毫秒):</label>
+                        <input type="range" id="hoverDelay" min="0" max="1000" value="100" step="50">
+                        <span id="hoverDelayValue">100</span>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label for="maxPreloads">最大预加载数:</label>
+                        <input type="range" id="maxPreloads" min="1" max="10" value="5" step="1">
+                        <span id="maxPreloadsValue">5</span>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label for="preloadMode">预加载模式:</label>
+                        <select id="preloadMode">
+                            <option value="hidden-tab">预加载窗口 (推荐)</option>
+                            <option value="iframe">iframe预加载</option>
+                        </select>
+                    </div>
+                    <div class="setting-description">
+                        <small>预加载窗口：完整预加载，主窗口无干扰</small><br>
+                        <small>iframe预加载：轻量级，兼容性好</small>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="networkAware" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="setting-label">网络感知</span>
+                    </div>
+                    <div class="setting-description">
+                        <small>自动检测网络状态，慢速网络时减少预加载</small>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="showIndicator" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="setting-label">显示预加载指示器</span>
+                    </div>
+                    <div class="setting-description">
+                        <small>在链接旁显示小圆点表示预加载状态</small>
+                    </div>
+                </div>
+
+                <div class="status-section">
+                    <h3>状态信息</h3>
+                    <div class="status-item">
+                        <span>当前状态:</span>
+                        <span id="currentStatus" class="status-enabled">已启用</span>
+                    </div>
+                    <div class="status-item">
+                        <span>预加载计数:</span>
+                        <span id="preloadCount">0</span>
+                    </div>
+                </div>
+
+                <div class="preload-section">
+                    <h3>当前预加载</h3>
+                    <div id="preloadList" class="preload-list">
+                        <div class="empty-message">暂无预加载内容</div>
+                    </div>
+                </div>
+
+                <div class="nearby-section">
+                    <h3>附近链接</h3>
+                    <div id="nearbyList" class="nearby-list">
+                        <div class="empty-message">暂无附近链接</div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="clearCache" class="btn btn-secondary">清理缓存</button>
+                    <button id="saveSettings" class="btn btn-primary" title="设置已自动保存">设置已自动保存</button>
+                </div>
+            </div>
+
+            <!-- 统计标签页 -->
+            <div class="tab-content" id="stats-tab">
+                <div class="stats-section">
+                    <h3>统计数据</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">总预加载次数:</span>
+                        <span class="stat-value" id="totalPreloads">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">命中次数:</span>
+                        <span class="stat-value" id="hitCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">命中率:</span>
+                        <span class="stat-value" id="hitRate">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">节省时间:</span>
+                        <span class="stat-value" id="savedTime">0ms</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">会话时长:</span>
+                        <span class="stat-value" id="sessionTime">0分钟</span>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="resetStats" class="btn btn-secondary">重置统计</button>
+                </div>
+            </div>
+
+            <!-- 网站规则标签页 -->
+            <div class="tab-content" id="rules-tab">
+                <div class="rules-section">
+                    <h3>网站规则</h3>
+                    <div id="rulesList" class="rules-list">
+                        <div class="empty-message">暂无网站规则</div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="addRule" class="btn btn-primary">添加规则</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>快捷键: Alt+P 开关 | Alt+C 清理</p>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
