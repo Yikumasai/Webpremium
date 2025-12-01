@@ -538,6 +538,35 @@ body.dark-mode .rule-status.disabled {
     color: #e57373;
 }
 
+.rule-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.btn-toggle {
+    padding: 4px 8px;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: background-color 0.2s;
+}
+
+.btn-toggle:hover {
+    background: #1557b0;
+}
+
+body.dark-mode .btn-toggle {
+    background: #8ab4f8;
+    color: #1e1e1e;
+}
+
+body.dark-mode .btn-toggle:hover {
+    background: #aecbfa;
+}
+
 .btn-remove {
     padding: 4px 8px;
     background: #ea4335;

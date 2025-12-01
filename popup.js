@@ -45,7 +45,9 @@ class PopupManager {
       sessionTime: document.getElementById('sessionTime'),
       resetStats: document.getElementById('resetStats'),
       rulesList: document.getElementById('rulesList'),
-      addRule: document.getElementById('addRule')
+      addRule: document.getElementById('addRule'),
+      enableAllRules: document.getElementById('enableAllRules'),
+      disableAllRules: document.getElementById('disableAllRules')
     };
   }
 
@@ -199,10 +201,24 @@ class PopupManager {
           <div class="rule-status ${rule.enabled ? 'enabled' : 'disabled'}">
             ${rule.enabled ? '已启用' : '已禁用'}
           </div>
-          <button class="btn-remove" data-domain="${domain}">删除</button>
+          <div class="rule-actions">
+            <button class="btn-toggle" data-domain="${domain}" data-enabled="${rule.enabled}">
+              ${rule.enabled ? '禁用' : '启用'}
+            </button>
+            <button class="btn-remove" data-domain="${domain}">删除</button>
+          </div>
         </div>
       `;
     }).join('');
+
+    // 添加切换按钮事件
+    rulesList.querySelectorAll('.btn-toggle').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const domain = btn.dataset.domain;
+        const currentEnabled = btn.dataset.enabled === 'true';
+        await this.toggleSiteRuleStatus(domain, !currentEnabled);
+      });
+    });
 
     // 添加删除按钮事件
     rulesList.querySelectorAll('.btn-remove').forEach(btn => {
@@ -275,6 +291,16 @@ class PopupManager {
     // 添加规则按钮
     this.elements.addRule.addEventListener('click', () => {
       this.showAddRuleDialog();
+    });
+
+    // 全部启用按钮
+    this.elements.enableAllRules.addEventListener('click', () => {
+      this.setAllRulesStatus(true);
+    });
+
+    // 全部禁用按钮
+    this.elements.disableAllRules.addEventListener('click', () => {
+      this.setAllRulesStatus(false);
     });
 
     // 实时更新预加载信息
@@ -424,25 +450,45 @@ class PopupManager {
   }
 
   async showAddRuleDialog() {
-    const domain = prompt('请输入网站域名（例如: example.com）:');
+    const domain = prompt('请输入要禁用预加载的网站域名（例如: baidu.com）:');
     if (!domain) return;
 
     try {
       const response = await chrome.runtime.sendMessage({
         action: 'updateSiteRule',
         domain: domain,
-        rule: { enabled: true }
+        rule: { enabled: false }  // 添加规则默认为禁用预加载
       });
 
       if (response.success) {
         await this.loadSiteRules();
-        this.showNotification('规则已添加', 'success');
+        this.showNotification(`已禁用 ${domain} 的预加载`, 'success');
       } else {
         throw new Error(response.error);
       }
     } catch (error) {
       console.error('添加规则失败:', error);
       this.showNotification('添加规则失败', 'error');
+    }
+  }
+
+  async toggleSiteRuleStatus(domain, enabled) {
+    try {
+      const response = await chrome.runtime.sendMessage({
+        action: 'updateSiteRule',
+        domain: domain,
+        rule: { enabled: enabled }
+      });
+
+      if (response.success) {
+        await this.loadSiteRules();
+        this.showNotification(`${domain} 已${enabled ? '启用' : '禁用'}`, 'success');
+      } else {
+        throw new Error(response.error);
+      }
+    } catch (error) {
+      console.error('切换规则状态失败:', error);
+      this.showNotification('切换规则状态失败', 'error');
     }
   }
 
@@ -467,6 +513,31 @@ class PopupManager {
     } catch (error) {
       console.error('删除规则失败:', error);
       this.showNotification('删除规则失败', 'error');
+    }
+  }
+
+  async setAllRulesStatus(enabled) {
+    const domains = Object.keys(this.siteRules);
+    if (domains.length === 0) {
+      this.showNotification('没有可操作的规则', 'info');
+      return;
+    }
+
+    try {
+      const response = await chrome.runtime.sendMessage({
+        action: 'setAllRulesStatus',
+        enabled: enabled
+      });
+
+      if (response.success) {
+        await this.loadSiteRules();
+        this.showNotification(`已${enabled ? '启用' : '禁用'}所有规则 (${domains.length}个)`, 'success');
+      } else {
+        throw new Error(response.error);
+      }
+    } catch (error) {
+      console.error('批量操作失败:', error);
+      this.showNotification('批量操作失败', 'error');
     }
   }
 

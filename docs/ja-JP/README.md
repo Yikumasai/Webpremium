@@ -1,4 +1,8 @@
-# 🚀 Webpremium - リンクプリローダー
+<div align="center">
+  
+# ![](../../icons/icon48.png) Webpremium - リンクプリローダー
+
+</div>
 
 <div align="center">
 

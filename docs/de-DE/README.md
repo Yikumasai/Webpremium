@@ -1,4 +1,8 @@
-# 🚀 Webpremium - Link-Preloader
+<div align="center">
+  
+# ![](../../icons/icon48.png) Webpremium - Link Preloader
+
+</div>
 
 <div align="center">
 

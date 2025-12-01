@@ -29,6 +29,12 @@ class LinkPreloader {
       'tencent.com'
     ];
 
+    // 绑定事件处理器，以便可以正确添加和移除
+    this.boundHandleMouseOver = this.handleMouseOver.bind(this);
+    this.boundHandleMouseOut = this.handleMouseOut.bind(this);
+    this.boundHandleClick = this.handleClick.bind(this);
+    this.boundHandleMouseMove = this.handleMouseMove.bind(this);
+
     this.init();
   }
 
@@ -50,8 +56,38 @@ class LinkPreloader {
       this.injectIndicatorStyles();
     }
 
+    // 检查当前网站是否启用预加载
+    console.log('=== 链接预加载器初始化 ===');
+    console.log('当前页面:', window.location.href);
+    console.log('域名:', window.location.hostname);
+    console.log('全局启用状态:', this.isEnabled);
+    
     if (this.isEnabled) {
-      this.attachEventListeners();
+      try {
+        console.log('正在检查网站规则...');
+        const response = await chrome.runtime.sendMessage({
+          action: 'checkSiteEnabled',
+          url: window.location.href
+        });
+        console.log('规则检查响应:', response);
+        
+        if (response && response.success && response.enabled === false) {
+          console.log(`🚫 当前网站已禁用预加载: ${window.location.hostname}`);
+          this.isEnabled = false;
+        } else if (response && response.success && response.enabled === true) {
+          console.log(`✅ 当前网站已启用预加载: ${window.location.hostname}`);
+          this.attachEventListeners();
+        } else {
+          console.warn('规则检查响应异常:', response);
+          this.attachEventListeners();
+        }
+      } catch (error) {
+        console.error('检查网站状态失败:', error);
+        // 如果检查失败，为了安全起见，不启用预加载
+        this.isEnabled = false;
+      }
+    } else {
+      console.log('预加载功能已全局禁用');
     }
 
     // 监听来自popup的消息
@@ -84,11 +120,16 @@ class LinkPreloader {
           console.log(`标签页已关闭，从已激活列表中移除: ${request.tabId}`);
         }
       } else if (request.action === 'siteRuleChanged') {
+        console.log(`网站规则已更改: ${request.domain} - ${request.enabled ? '启用' : '禁用'}`);
         if (!request.enabled) {
+          // 禁用预加载：清理所有预加载并移除事件监听器
           this.clearAllPreloads();
           this.removeEventListeners();
+          console.log('预加载已禁用，事件监听器已移除');
         } else {
+          // 启用预加载：添加事件监听器
           this.attachEventListeners();
+          console.log('预加载已启用，事件监听器已添加');
         }
       }
     });
@@ -128,22 +169,24 @@ class LinkPreloader {
 
   attachEventListeners() {
     // 为所有链接添加事件监听器
-    document.addEventListener('mouseover', this.handleMouseOver.bind(this));
-    document.addEventListener('mouseout', this.handleMouseOut.bind(this));
-    document.addEventListener('click', this.handleClick.bind(this));
-    document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+    document.addEventListener('mouseover', this.boundHandleMouseOver);
+    document.addEventListener('mouseout', this.boundHandleMouseOut);
+    document.addEventListener('click', this.boundHandleClick);
+    document.addEventListener('mousemove', this.boundHandleMouseMove);
 
     // 定期更新附近链接
-    this.updateTimer = setInterval(() => {
-      this.updateNearbyLinks();
-    }, 500);
+    if (!this.updateTimer) {
+      this.updateTimer = setInterval(() => {
+        this.updateNearbyLinks();
+      }, 500);
+    }
   }
 
   removeEventListeners() {
-    document.removeEventListener('mouseover', this.handleMouseOver.bind(this));
-    document.removeEventListener('mouseout', this.handleMouseOut.bind(this));
-    document.removeEventListener('click', this.handleClick.bind(this));
-    document.removeEventListener('mousemove', this.handleMouseMove.bind(this));
+    document.removeEventListener('mouseover', this.boundHandleMouseOver);
+    document.removeEventListener('mouseout', this.boundHandleMouseOut);
+    document.removeEventListener('click', this.boundHandleClick);
+    document.removeEventListener('mousemove', this.boundHandleMouseMove);
 
     if (this.updateTimer) {
       clearInterval(this.updateTimer);
@@ -287,18 +330,20 @@ class LinkPreloader {
       return;
     }
 
-    // 检查网站是否启用
+    // 检查当前网站是否启用预加载（检查当前页面的域名，而不是链接目标）
     try {
       const response = await chrome.runtime.sendMessage({
         action: 'checkSiteEnabled',
-        url: href
+        url: window.location.href  // 使用当前页面URL而不是链接URL
       });
-      if (response && !response.enabled) {
-        console.log(`🚫 网站已禁用预加载: ${href}`);
+      if (response && response.success && response.enabled === false) {
+        console.log(`🚫 当前网站已禁用预加载: ${window.location.hostname}`);
         return;
       }
     } catch (error) {
       console.error('检查网站状态失败:', error);
+      // 如果检查失败，为了安全起见，不继续预加载
+      return;
     }
 
     // 检查预加载数量限制

@@ -1,4 +1,8 @@
-# 🚀 Webpremium - Préchargeur de Liens
+<div align="center">
+  
+# ![](../../icons/icon48.png) Webpremium - Préchargeur de Liens
+
+</div>
 
 <div align="center">
 

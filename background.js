@@ -25,7 +25,17 @@ class PreloadManager {
     this.init();
   }
 
-  init() {
+  async init() {
+    // 先加载统计数据和网站规则（等待完成）
+    await this.loadStats();
+    await this.loadSiteRules();
+    
+    console.log('=== 预加载管理器初始化完成 ===');
+    console.log('已加载规则数量:', this.siteRules.size);
+    if (this.siteRules.size > 0) {
+      console.log('规则列表:', Array.from(this.siteRules.keys()));
+    }
+    
     // 监听扩展安装
     chrome.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'install') {
@@ -72,10 +82,6 @@ class PreloadManager {
     chrome.contextMenus.onClicked.addListener((info, tab) => {
       this.handleContextMenu(info, tab);
     });
-
-    // 新增：加载统计数据和网站规则
-    this.loadStats();
-    this.loadSiteRules();
   }
 
   setupContextMenu() {
@@ -223,6 +229,11 @@ class PreloadManager {
 
         case 'updateSiteRule':
           await this.updateSiteRule(request.domain, request.rule);
+          sendResponse({ success: true });
+          break;
+
+        case 'setAllRulesStatus':
+          await this.setAllRulesStatus(request.enabled);
           sendResponse({ success: true });
           break;
 
@@ -703,27 +714,88 @@ class PreloadManager {
       const result = await chrome.storage.sync.get(['siteRules']);
       if (result.siteRules) {
         this.siteRules = new Map(Object.entries(result.siteRules));
+        console.log('网站规则已加载:', Object.keys(result.siteRules));
+      } else {
+        console.log('没有找到网站规则');
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('加载网站规则失败:', error);
+    }
   }
 
   async saveSiteRules() {
     try {
       const rules = Object.fromEntries(this.siteRules);
       await chrome.storage.sync.set({ siteRules: rules });
-    } catch (error) {}
+      console.log('网站规则已保存:', Object.keys(rules));
+    } catch (error) {
+      console.error('保存网站规则失败:', error);
+    }
   }
 
   isSiteEnabled(url) {
     try {
       const urlObj = new URL(url);
-      const domain = urlObj.hostname;
-      const rule = this.siteRules.get(domain);
-      if (rule && rule.enabled === false) {
-        return false;
+      const hostname = urlObj.hostname;
+      
+      console.log(`检查网站规则 - 完整域名: ${hostname}`);
+      console.log(`当前规则列表:`, Array.from(this.siteRules.keys()));
+      
+      // 1. 先精确匹配完整域名
+      let rule = this.siteRules.get(hostname);
+      if (rule) {
+        console.log(`精确匹配到规则: ${hostname} -> ${rule.enabled ? '启用' : '禁用'}`);
+        if (rule.enabled === false) {
+          return false;
+        }
+        return true;
       }
+      
+      // 2. 如果域名以 www. 开头，尝试匹配不带 www 的域名
+      if (hostname.startsWith('www.')) {
+        const domainWithoutWww = hostname.substring(4);
+        rule = this.siteRules.get(domainWithoutWww);
+        if (rule) {
+          console.log(`匹配到规则(去www): ${domainWithoutWww} -> ${rule.enabled ? '启用' : '禁用'}`);
+          if (rule.enabled === false) {
+            return false;
+          }
+          return true;
+        }
+      }
+      
+      // 3. 如果域名不以 www. 开头，尝试匹配带 www 的域名
+      if (!hostname.startsWith('www.')) {
+        const domainWithWww = 'www.' + hostname;
+        rule = this.siteRules.get(domainWithWww);
+        if (rule) {
+          console.log(`匹配到规则(加www): ${domainWithWww} -> ${rule.enabled ? '启用' : '禁用'}`);
+          if (rule.enabled === false) {
+            return false;
+          }
+          return true;
+        }
+      }
+      
+      // 4. 尝试匹配主域名（去掉子域名）
+      const parts = hostname.split('.');
+      if (parts.length > 2) {
+        const mainDomain = parts.slice(-2).join('.');
+        rule = this.siteRules.get(mainDomain);
+        if (rule) {
+          console.log(`匹配到规则(主域名): ${mainDomain} -> ${rule.enabled ? '启用' : '禁用'}`);
+          if (rule.enabled === false) {
+            return false;
+          }
+          return true;
+        }
+      }
+      
+      // 没有匹配到任何规则，默认启用
+      console.log(`网站规则检查: ${hostname} - 无匹配规则，默认启用`);
       return true;
-    } catch {
+    } catch (error) {
+      console.error('解析URL失败:', error);
       return true;
     }
   }
@@ -736,6 +808,8 @@ class PreloadManager {
       currentRule.enabled = !currentRule.enabled;
       this.siteRules.set(domain, currentRule);
       await this.saveSiteRules();
+      
+      console.log(`网站规则已切换: ${domain} - ${currentRule.enabled ? '启用' : '禁用'}`);
       
       // 通知用户
       const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -754,10 +828,27 @@ class PreloadManager {
   async updateSiteRule(domain, rule) {
     if (rule === null) {
       this.siteRules.delete(domain);
+      console.log(`网站规则已删除: ${domain}`);
     } else {
       this.siteRules.set(domain, rule);
+      console.log(`网站规则已更新: ${domain} - ${rule.enabled ? '启用' : '禁用'}`);
     }
     await this.saveSiteRules();
+  }
+
+  async setAllRulesStatus(enabled) {
+    const count = this.siteRules.size;
+    if (count === 0) {
+      console.log('没有规则需要更新');
+      return;
+    }
+
+    for (const [domain, rule] of this.siteRules) {
+      rule.enabled = enabled;
+    }
+    
+    await this.saveSiteRules();
+    console.log(`已${enabled ? '启用' : '禁用'}所有规则 (${count}个)`);
   }
 }
 

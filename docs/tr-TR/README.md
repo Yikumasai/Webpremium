@@ -1,4 +1,8 @@
-# 🚀 Webpremium - Bağlantı Ön Yükleyici
+<div align="center">
+  
+# ![](../../icons/icon48.png) Webpremium - Bağlantı Ön Yükleyici
+
+</div>
 
 <div align="center">
 
