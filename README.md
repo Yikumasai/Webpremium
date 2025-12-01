@@ -356,10 +356,8 @@ Mozilla Public License Version 2.0
 
 ---
 ## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=Date)](https://star-history.com/#Yikumasai/Webpremium&Date)
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=date&legend=top-left)](https://www.star-history.com/#Yikumasai/Webpremium&type=date&legend=top-left)
-
----
 <div align="center">
 
 **让浏览更快，让体验更好**
