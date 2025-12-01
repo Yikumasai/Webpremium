@@ -355,9 +355,13 @@ class LinkPreloader {
     try {
       console.log(`🎯 开始预加载链接: ${href} (模式: ${this.preloadMode})`);
 
-      // 标记为正在预加载
+      // 标记为正在预加载，保存链接元素引用
       this.preloadingUrls.add(href);
-      this.preloadedLinks.set(href, { status: 'loading', timestamp: Date.now() });
+      this.preloadedLinks.set(href, { 
+        status: 'loading', 
+        timestamp: Date.now(),
+        linkElement: linkElement  // 保存元素引用
+      });
 
       // 添加加载指示器
       if (this.showIndicator && linkElement) {
@@ -401,7 +405,8 @@ class LinkPreloader {
           status: 'loaded',
           timestamp: Date.now(),
           type: 'preload-window',
-          tabId: response.tabId
+          tabId: response.tabId,
+          linkElement: linkElement  // 保存元素引用
         });
         
         // 更新指示器状态
@@ -445,7 +450,8 @@ class LinkPreloader {
         status: 'loaded',
         timestamp: Date.now(),
         type: 'iframe',
-        iframe: iframe
+        iframe: iframe,
+        linkElement: linkElement  // 保存元素引用
       });
       if (this.showIndicator && linkElement) {
         linkElement.classList.remove('loading');
@@ -502,14 +508,15 @@ class LinkPreloader {
             savedTime: savedTime
           }).catch(() => {});
 
+          // 移除指示器（优先使用保存的元素引用）
+          if (preloadData.linkElement) {
+            try {
+              preloadData.linkElement.classList.remove('preload-indicator', 'loading');
+            } catch (e) {}
+          }
+          
           // 从预加载列表中移除，但不关闭标签页
           this.preloadedLinks.delete(href);
-
-          // 移除指示器
-          const link = document.querySelector(`a[href="${href}"]`);
-          if (link) {
-            link.classList.remove('preload-indicator', 'loading');
-          }
 
         } catch (error) {
           console.error('激活标签页失败:', error);
@@ -526,6 +533,15 @@ class LinkPreloader {
   async removePreload(href) {
     const preloadData = this.preloadedLinks.get(href);
     if (preloadData) {
+      // 优先使用保存的元素引用移除指示器
+      if (preloadData.linkElement) {
+        try {
+          preloadData.linkElement.classList.remove('preload-indicator', 'loading');
+        } catch (e) {
+          // 元素可能已被移除，忽略错误
+        }
+      }
+      
       if (preloadData.type === 'iframe') {
         const iframe = this.preloadFrames.get(href);
         if (iframe && iframe.parentNode) {
@@ -557,10 +573,15 @@ class LinkPreloader {
       }
     }
     
-    // 移除指示器
-    const link = document.querySelector(`a[href="${href}"]`);
-    if (link) {
-      link.classList.remove('preload-indicator', 'loading');
+    // 备用方案：尝试用选择器查找（处理 href 中的特殊字符）
+    try {
+      const escapedHref = CSS.escape(href);
+      const link = document.querySelector(`a[href="${escapedHref}"]`);
+      if (link) {
+        link.classList.remove('preload-indicator', 'loading');
+      }
+    } catch (e) {
+      // 选择器失败，忽略
     }
     
     this.preloadedLinks.delete(href);
