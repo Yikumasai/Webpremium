@@ -84,10 +84,7 @@ Webpremium 是一款革命性的 Chrome 浏览器插件，通过智能预加载�
 
 ## 📦 安装方法
 
-### 方法一：Chrome 网上应用店（推荐）
-> 待上架
-
-### 方法二：开发者模式安装
+### 方法一：开发者模式安装
 
 1. **下载源代码**
    ```bash
@@ -108,6 +105,10 @@ Webpremium 是一款革命性的 Chrome 浏览器插件，通过智能预加载�
 5. **完成安装**
    - 扩展程序图标会出现在浏览器工具栏
    - 点击图标即可打开设置面板
+
+
+### 方法二：Chrome 网上应用店
+> 待上架
 
 ---
 
@@ -329,9 +330,9 @@ Mozilla Public License Version 2.0
 
 ## 💬 反馈与支持
 
-- 🐛 [报告 Bug](https://github.com/yourusername/webpremium/issues)
-- 💡 [功能建议](https://github.com/yourusername/webpremium/issues)
-- 📧 邮箱：your.email@example.com
+- 🐛 [报告 Bug](https://github.com/Yikumasai/webpremium/issues)
+- 💡 [功能建议](https://github.com/Yikumasai/webpremium/issues)
+- 📧 邮箱：likanglin2001@qq.com
 
 ---
 
@@ -347,6 +348,6 @@ Mozilla Public License Version 2.0
 
 **让浏览更快，让体验更好**
 
-Made with ❤️ by Webpremium Team
+Made with ❤️ by Webpremium
 
 </div>
