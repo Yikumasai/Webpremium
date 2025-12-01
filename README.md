@@ -352,7 +352,11 @@ Mozilla Public License Version 2.0
 如果这个项目对你有帮助，请给我们一个 ⭐️ Star！
 
 ---
+## Star History
 
+[![Star History Chart](https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=date&legend=top-left)](https://www.star-history.com/#Yikumasai/Webpremium&type=date&legend=top-left)
+
+---
 <div align="center">
 
 **让浏览更快，让体验更好**
