@@ -1,6 +1,6 @@
 <div align="center">
   
-# ![](../../icons/icon48.png) Webpremium - 链接预加载器
+# ![](../../icons/icon48.png) Webpremium - Link Preloader
 
 </div>
 
@@ -373,4 +373,5 @@ If this project helps you, please give us a ⭐️ Star!
 Made with ❤️ by Webpremium
 
 </div>
+
 
