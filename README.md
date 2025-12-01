@@ -1,4 +1,8 @@
-# 🚀 Webpremium - 链接预加载器
+<div align="center">
+  
+# ![](./icons/icon48.png) Webpremium - 链接预加载器
+
+</div>
 
 <div align="center">
 
