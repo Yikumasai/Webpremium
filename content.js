@@ -201,7 +201,7 @@ class LinkPreloader {
 
   handleMouseOver(event) {
     const link = event.target.closest('a[href]');
-    if (!link || !this.isValidLink(link.href)) return;
+    if (!link || !this.isValidLink(link.href, link)) return;
 
     // 如果已经预加载过，直接返回
     if (this.preloadedLinks.has(link.href) || this.preloadingUrls.has(link.href)) {
@@ -232,7 +232,7 @@ class LinkPreloader {
 
   handleClick(event) {
     const link = event.target.closest('a[href]');
-    if (!link || !this.isValidLink(link.href)) return;
+    if (!link || !this.isValidLink(link.href, link)) return;
 
     // 如果链接已经预加载，使用预加载的内容
     if (this.preloadedLinks.has(link.href)) {
@@ -241,13 +241,41 @@ class LinkPreloader {
     }
   }
 
-  isValidLink(href) {
+  isValidLink(href, linkElement = null) {
     try {
       const url = new URL(href, window.location.href);
-      // 只预加载HTTP/HTTPS链接，排除当前页面和锚点链接
-      return (url.protocol === 'http:' || url.protocol === 'https:') &&
-             url.href !== window.location.href &&
-             !url.href.includes('#');
+      
+      // 只预加载HTTP/HTTPS链接
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        return false;
+      }
+      
+      // 排除当前页面和锚点链接
+      if (url.href === window.location.href || url.href.includes('#')) {
+        return false;
+      }
+      
+      // 排除下载链接（检查链接元素的 download 属性）
+      if (linkElement && linkElement.hasAttribute('download')) {
+        return false;
+      }
+      
+      // 排除常见下载文件扩展名
+      const downloadExtensions = [
+        '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz',
+        '.exe', '.msi', '.dmg', '.pkg', '.deb', '.rpm', '.apk',
+        '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+        '.mp3', '.mp4', '.avi', '.mkv', '.mov', '.wmv', '.flv',
+        '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp',
+        '.iso', '.img', '.bin'
+      ];
+      
+      const pathname = url.pathname.toLowerCase();
+      if (downloadExtensions.some(ext => pathname.endsWith(ext))) {
+        return false;
+      }
+      
+      return true;
     } catch {
       return false;
     }
@@ -284,7 +312,7 @@ class LinkPreloader {
     }
 
     const allLinks = Array.from(document.querySelectorAll('a[href]'))
-      .filter(link => this.isValidLink(link.href))
+      .filter(link => this.isValidLink(link.href, link))
       .map(link => {
         const rect = link.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
