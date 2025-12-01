@@ -88,7 +88,7 @@ Webpremium 是一款革命性的 Chrome 浏览器插件，通过智能预加载�
 
 1. **下载源代码**
    - 在[release](https://github.com/Yikumasai/Webpremium/releases)页面下载
-   - 
+   或
    ```bash
    git clone https://github.com/Yikumasai/webpremium.git
    ```
