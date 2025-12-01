@@ -87,8 +87,10 @@ Webpremium 是一款革命性的 Chrome 浏览器插件，通过智能预加载�
 ### 方法一：开发者模式安装
 
 1. **下载源代码**
-   - 在[release](https://github.com/Yikumasai/Webpremium/releases)页面下载
+   在[release](https://github.com/Yikumasai/Webpremium/releases)页面下载
+   
    或
+   
    ```bash
    git clone https://github.com/Yikumasai/webpremium.git
    ```
@@ -289,18 +291,7 @@ A: 可以。在"网站规则"标签页中添加域名规则，或右键点击页
 
 欢迎提交 Issue 和 Pull Request！
 
-### 开发环境设置
 
-```bash
-# 克隆仓库
-git clone https://github.com/yourusername/webpremium.git
-
-# 进入目录
-cd webpremium
-
-# 在 Chrome 中加载扩展程序
-# chrome://extensions/ → 开发者模式 → 加载已解压的扩展程序
-```
 
 ### 项目结构
 
