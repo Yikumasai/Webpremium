@@ -15,7 +15,8 @@
     "https://*/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -58,7 +59,11 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["preload.html"],
+      "resources": [
+        "preload.html",
+        "src/content/*.js",
+        "src/shared/*.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ]
