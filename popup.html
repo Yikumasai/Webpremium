@@ -89,6 +89,48 @@
                     </div>
                 </div>
 
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="mutePreload" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="setting-label">预加载静音</span>
+                    </div>
+                    <div class="setting-description">
+                        <small>预加载标签页默认静音，避免视频/直播自动播放出声；激活后在地址栏点击可解除静音</small>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="smartTabDedup" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="setting-label">智能标签页去重与跳转</span>
+                    </div>
+                    <div class="setting-description">
+                        <small>预加载前检测当前窗口是否已打开目标网页；点击时优先跳转到已有标签页，避免重复打开</small>
+                    </div>
+                </div>
+
+                <details class="advanced-features" id="advancedFeatures">
+                    <summary id="advancedFeaturesToggle">高级功能</summary>
+                    <div class="setting-group advanced-setting-group">
+                        <div class="setting-item">
+                            <label class="switch">
+                                <input type="checkbox" id="tabOutEnabled">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="setting-label">Tab-out</span>
+                        </div>
+                        <div class="setting-description">
+                            <small>开启后新标签页将显示 Tab-out 标签页管理面板，并启用标签数量徽章与收藏右键菜单</small>
+                        </div>
+                    </div>
+                </details>
+
                 <div class="status-section">
                     <h3>状态信息</h3>
                     <div class="status-item">
@@ -172,6 +214,6 @@
         </div>
     </div>
 
-    <script src="popup.js"></script>
+    <script type="module" src="popup.js"></script>
 </body>
 </html>

@@ -1,0 +1,1296 @@
+/* ============================================================
+   Tab Mission Control — Dashboard Styles
+   Extracted directly from mockup.html — do not modify unless
+   also updating the mockup. This is the approved design.
+   ============================================================ */
+
+:root {
+  --ink: #1a1613;
+  --paper: #f8f5f0;
+  --warm-gray: #e8e2da;
+  --muted: #9a918a;
+  --accent-amber: #c8713a;
+  --accent-sage: #5a7a62;
+  --accent-slate: #5a6b7a;
+  --accent-rose: #b35a5a;
+  --status-active: #3d7a4a;
+  --status-cooling: #b8892e;
+  --status-abandoned: #b35a5a;
+  --card-bg: #fffdf9;
+  --shadow: rgba(26, 22, 19, 0.06);
+  --hover-bg: rgba(0, 0, 0, 0.05);
+}
+
+/* Dark palette tuned to feel like Claude's app — neutral warm charcoal,
+   not pitch black, with subtle elevation for cards/modals. */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #ece6dc;          /* warm off-white text, easy on eyes */
+  --paper: #262421;        /* main page bg — neutral warm charcoal */
+  --card-bg: #2f2c29;      /* cards/inputs — one step up from paper */
+  --warm-gray: #3a3733;    /* very subtle borders (almost invisible) */
+  --muted: #8e8780;        /* secondary text — cool warm grey */
+  --shadow: rgba(0, 0, 0, 0.4);
+  --hover-bg: rgba(255, 255, 255, 0.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ---- Thin custom scrollbars ---- */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(154, 145, 138, 0.4) transparent;
+}
+/* WebKit / Blink (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(154, 145, 138, 0.35);
+  border-radius: 0;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(154, 145, 138, 0.6);
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+html, body {
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle paper texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 10px 16px 6px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Header ---- */
+header {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--warm-gray);
+}
+
+.header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.header-left h1 {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+}
+
+.header-left .date {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-toggle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--warm-gray);
+  border-radius: 0;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+  min-width: 36px;
+}
+
+.lang-toggle:hover {
+  color: var(--accent-amber);
+  border-color: var(--accent-amber);
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--warm-gray);
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--muted);
+  width: 26px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.theme-toggle:hover {
+  color: var(--accent-amber);
+  border-color: var(--accent-amber);
+}
+
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---- Hello Web duplicate-tabs pill (sits inline in the header) ----
+   Capped to the same height as the other header controls (≈22px) so
+   showing/hiding it doesn't change the header's height. */
+.tab-cleanup-banner {
+  flex-shrink: 0;
+  background: rgba(200, 113, 58, 0.07);
+  border: 1px solid rgba(200, 113, 58, 0.18);
+  border-radius: 0;
+  height: 22px;
+  padding: 0 2px 0 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  line-height: 1;
+}
+
+.tab-cleanup-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Hide the big circular icon — too heavy for the compact form. */
+.tab-cleanup-icon { display: none; }
+
+.tab-cleanup-text {
+  font-size: 10.5px;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.tab-cleanup-text strong {
+  font-weight: 600;
+  color: var(--accent-amber);
+}
+
+.tab-cleanup-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 0;
+  border: none;
+  background: var(--accent-amber);
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.tab-cleanup-btn:hover {
+  opacity: 0.85;
+}
+
+/* ---- Section Headers ---- */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  margin-top: 8px;
+}
+
+.section-header h2 {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--warm-gray);
+}
+
+.section-count {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Spacing between the Pinned + Open-tabs sub-sections inside the column */
+.active-subsection + .active-subsection {
+  margin-top: 18px;
+}
+
+/* Right-aligned action slot in a section header (e.g. "Close all N tabs") */
+.section-action {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.section-action .action-btn {
+  font-size: 11px;
+  padding: 3px 10px;
+}
+
+/* ---- Mission Cards ---- */
+.missions {
+  columns: 280px;
+  column-gap: 12px;
+  margin-bottom: 40px;
+}
+
+.mission-card {
+  background: var(--card-bg);
+  border: 1px solid var(--warm-gray);
+  border-radius: 0;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  break-inside: avoid;       /* don't split a card across columns */
+  margin-bottom: 12px;       /* vertical spacing (replaces grid gap) */
+}
+
+/* Colored top border instead of side bar for grid cards */
+.mission-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--warm-gray);
+}
+
+.mission-card.has-active-bar::before { background: var(--status-active); }
+.mission-card.has-amber-bar::before { background: var(--accent-amber); }
+.mission-card.has-neutral-bar::before { background: var(--warm-gray); }
+
+.mission-card:hover {
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+/* Closing animation — card scales down and fades out */
+.mission-card.closing {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.mission-card.collapsed {
+  display: none !important;
+}
+
+/* Old side status bar — hidden, replaced by top border via ::before */
+.status-bar {
+  display: none;
+}
+
+.mission-content {
+  min-width: 0;
+}
+
+/* Hide the right-side meta (page count) — info is already in the badge */
+.mission-meta {
+  display: none;
+}
+
+.mission-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+/* Close-all icon-only button — pinned to the right edge of the card header.
+   Selector must be more specific than `.action-btn` or its padding overrides
+   ours and squashes the SVG to zero width. */
+.action-btn.mission-close-all {
+  margin-left: auto;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-btn.mission-close-all svg {
+  width: 14px;
+  height: 14px;
+}
+
+.mission-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+}
+
+/* Tab indicator badge — shows how many Chrome tabs are still open for this mission */
+.open-tabs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--accent-amber);
+  background: rgba(200, 113, 58, 0.08);
+  padding: 2px 8px;
+  border-radius: 0;
+}
+
+.open-tabs-badge svg {
+  width: 10px;
+  height: 10px;
+}
+
+.mission-summary {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.mission-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ---- Tab row — each tab is a full-width row with favicon, title, and actions ---- */
+.page-chip {
+  font-size: 13px;
+  color: var(--ink);
+  background: transparent;
+  padding: 8px 4px;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid rgba(154, 145, 138, 0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.page-chip:last-child,
+.page-chip-overflow {
+  border-bottom: none;
+}
+
+/* Favicon — slight rounded corners on logos, even though the rest of
+   the UI is square. */
+.chip-favicon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border-radius: 3px;
+}
+
+/* Title text — single line, ellipsis when too long. Keeps every chip row
+   the same height regardless of how long the title is. */
+.chip-text {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Duplicate badge — looks like a small button. Hover swaps "(重复 × 2)" →
+   "关闭重复". Both labels share one grid cell so the badge width is fixed
+   to the wider one — no layout shift on hover. */
+.chip-dupe-badge {
+  display: inline-grid;
+  align-items: center;
+  justify-items: center;
+  color: var(--accent-amber);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(200, 113, 58, 0.08);
+  border: 1px solid rgba(200, 113, 58, 0.22);
+  padding: 2px 10px;
+  margin: 0 0 0 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.5;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.chip-dupe-badge .dupe-count,
+.chip-dupe-badge .dupe-action {
+  grid-area: 1 / 1;
+}
+
+.chip-dupe-badge .dupe-action       { visibility: hidden; }
+.chip-dupe-badge:hover .dupe-count  { visibility: hidden; }
+.chip-dupe-badge:hover .dupe-action { visibility: visible; }
+
+.chip-dupe-badge:hover {
+  background: rgba(200, 113, 58, 0.16);
+  border-color: var(--accent-amber);
+}
+
+/* Duplicate border highlight */
+.chip-has-dupes {
+  border-color: rgba(200, 113, 58, 0.25);
+}
+
+/* Action buttons grouped on the right */
+.chip-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ---- Chip action buttons (save + close) ---- */
+.chip-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 0;
+  opacity: 0.35;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.chip-action svg {
+  width: 15px;
+  height: 15px;
+}
+
+.chip-action:hover {
+  opacity: 1;
+  background: rgba(154, 145, 138, 0.1);
+}
+
+.chip-close:hover {
+  color: var(--status-abandoned);
+  background: rgba(179, 90, 90, 0.08);
+}
+
+.page-chip.clickable {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.page-chip.clickable:hover {
+  background: rgba(200, 113, 58, 0.04);
+}
+
+/* "+N more" overflow chip */
+.page-chip-overflow {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 6px 4px;
+}
+
+/* mission-meta hidden — see above */
+
+.mission-time {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.mission-page-count {
+  font-size: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.mission-page-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ---- Actions row ---- */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.action-btn {
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 0;
+  border: 1px solid var(--warm-gray);
+  background: var(--card-bg);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.action-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.action-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.action-btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.action-btn.primary:hover {
+  opacity: 0.85;
+}
+
+.action-btn.close-tabs {
+  border-color: rgba(200, 113, 58, 0.3);
+  color: var(--accent-amber);
+  background: rgba(200, 113, 58, 0.04);
+}
+
+.action-btn.close-tabs:hover {
+  background: rgba(200, 113, 58, 0.1);
+  border-color: var(--accent-amber);
+}
+
+.action-btn.save-tabs {
+  border-color: rgba(90, 122, 98, 0.3);
+  color: var(--accent-sage);
+  background: rgba(90, 122, 98, 0.04);
+}
+
+.action-btn.save-tabs:hover {
+  background: rgba(90, 122, 98, 0.1);
+  border-color: var(--accent-sage);
+}
+
+.action-btn.danger {
+  color: var(--status-abandoned);
+}
+
+.action-btn.danger:hover {
+  border-color: var(--status-abandoned);
+  color: var(--status-abandoned);
+}
+
+/* ---- Toast notification ---- */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  z-index: 100;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast svg {
+  width: 16px;
+  height: 16px;
+  color: var(--status-active);
+}
+
+/* ---- Footer ---- */
+footer {
+  flex-shrink: 0;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--warm-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-stats {
+  display: flex;
+  gap: 18px;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stat-num {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+  transition: all 0.3s;
+}
+
+.stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.last-refresh {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ================================================================
+   STATIC DEFAULT VIEW — new elements added for "AI on demand"
+   ================================================================ */
+
+/* ---- Neutral status bar (domain-grouped cards, no AI color) ---- */
+.status-bar.neutral {
+  background: var(--warm-gray);
+}
+
+/* ================================================================
+   MISSIONS EMPTY STATE
+   Shown when all mission cards have been closed.
+   A calm, satisfying "you did it" moment.
+   ================================================================ */
+
+.missions-empty-state {
+  /* Takes the full width — spans all columns */
+  column-span: all;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  padding: 56px 24px;
+  text-align: center;
+
+}
+
+/* CSS-drawn checkmark in a glowing circle */
+.empty-checkmark {
+  width: 56px;
+  height: 56px;
+  border-radius: 0;
+  background: rgba(90, 122, 98, 0.1);
+  border: 1.5px solid rgba(90, 122, 98, 0.3);
+
+  /* Soft sage glow */
+  box-shadow: 0 0 0 8px rgba(90, 122, 98, 0.05),
+              0 0 0 16px rgba(90, 122, 98, 0.03);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Pop in with a gentle scale animation */
+  animation: checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+.empty-checkmark svg {
+  width: 26px;
+  height: 26px;
+  color: var(--accent-sage);
+  stroke-width: 2.5;
+}
+
+@keyframes checkPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.empty-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+
+.empty-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+
+/* ================================================================
+   SAVED FOR LATER — Checklist Column + Archive
+   ================================================================ */
+
+/* ---- Two-column 50/50 layout ---- */
+/* Favorites on the left half, open tabs on the right half.
+   Each side scrolls independently; the page itself never scrolls. */
+.dashboard-columns {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 28px;
+  align-items: stretch;
+  overflow-y: hidden;
+}
+
+/* Open tabs column (right half) */
+.dashboard-columns .active-section {
+  flex: 1 1 50%;
+  min-width: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Favorites column (left half) — scrolls vertically when content exceeds
+   the viewport. There's no hard cap on favorite count anymore. */
+.favorites-column {
+  flex: 1 1 50%;
+  min-width: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make the list grow to fill the column so users can drop a card into
+   the empty area below the existing items. */
+.favorites-column .favorites-list {
+  flex: 1;
+  align-content: start;
+}
+
+/* ---- Favorites column ---- */
+.favorites-column .section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.favorites-add-btn {
+  background: none;
+  border: 1px solid var(--warm-gray);
+  border-radius: 0;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: all 0.15s;
+  padding: 0;
+}
+
+.favorites-add-btn:hover {
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+}
+
+.favorites-add-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.favorites-add-btn.open {
+  background: var(--accent-amber);
+  border-color: var(--accent-amber);
+  color: white;
+  transform: rotate(45deg);
+}
+
+.favorites-form {
+  background: var(--card-bg);
+  border: 1px solid var(--warm-gray);
+  border-radius: 0;
+  padding: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ---- Favorites add/edit floating modal ---- */
+.favorites-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.favorites-form-modal {
+  width: 380px;
+  max-width: 100%;
+  margin: 0;
+  padding: 16px;
+  gap: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+/* ---- Generic confirm dialog (replaces native window.confirm) ---- */
+.confirm-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.confirm-card {
+  background: var(--card-bg);
+  border: 1px solid var(--warm-gray);
+  padding: 20px;
+  width: 320px;
+  max-width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.confirm-message {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.confirm-cancel,
+.confirm-ok {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 0;
+  padding: 6px 14px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.confirm-cancel {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--warm-gray);
+}
+
+.confirm-cancel:hover {
+  color: var(--ink);
+}
+
+.confirm-ok {
+  background: var(--accent-rose);
+  color: white;
+}
+
+.confirm-ok:hover {
+  opacity: 0.85;
+}
+
+.favorites-form-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: -4px;   /* tighten the gap to the input below */
+}
+
+.favorites-form-input {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--warm-gray);
+  border-radius: 0;
+  padding: 7px 9px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.favorites-form-input:focus {
+  border-color: var(--accent-amber);
+}
+
+.favorites-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.favorites-form-actions-right {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.favorites-form-submit,
+.favorites-form-cancel,
+.favorites-form-delete {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.favorites-form-submit {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.favorites-form-submit:hover {
+  background: var(--accent-amber);
+}
+
+.favorites-form-cancel {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--warm-gray);
+}
+
+.favorites-form-cancel:hover {
+  color: var(--ink);
+}
+
+/* Delete (danger) — left-aligned, only shown while editing. */
+.favorites-form-delete {
+  background: transparent;
+  color: var(--accent-rose);
+  border: 1px solid var(--accent-rose);
+}
+
+.favorites-form-delete:hover {
+  background: var(--accent-rose);
+  color: white;
+}
+
+/* Square grid — cards sit flush with no gaps, no borders. */
+.favorites-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 0;
+}
+
+.favorite-item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  cursor: grab;
+  transition: background 0.12s;
+  text-align: center;
+  /* It's an <a href> — strip the default link decoration / color. */
+  text-decoration: none;
+  color: inherit;
+}
+
+.favorite-item:active { cursor: grabbing; }
+
+/* Hover highlight — a soft amber wash over the cell. */
+.favorite-item:hover {
+  background: rgba(200, 113, 58, 0.08);
+}
+
+/* ---- Drag-and-drop visual states (scoped to the favorites column) ---- */
+.favorite-item.dragging {
+  opacity: 0.4;
+}
+
+/* Drop on another card → highlight that card (it'll be swapped). */
+.favorite-item.drop-target {
+  background: rgba(200, 113, 58, 0.18);
+}
+
+/* Empty grid cells fill the rest of the 9×9. Invisible by default;
+   subtle wash on hover during drag so the user can see drop targets. */
+.favorite-slot-empty {
+  aspect-ratio: 1 / 1;
+  border-radius: 0;
+  background: transparent;
+  transition: background 0.12s;
+}
+
+body.dragging-favorite .favorite-slot-empty:hover,
+body.dragging-favorite .favorite-slot-empty.drop-target {
+  background: rgba(200, 113, 58, 0.1);
+}
+
+.favorite-favicon {
+  width: 60%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  /* Logos keep a soft rounded corner — feels more app-icon-y. */
+  border-radius: 8px;
+}
+
+.favorite-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.2;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Single 3-dot menu button at the top-right of each card.
+   visibility (not display) keeps layout constant on hover. */
+.favorite-menu {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  visibility: hidden;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.favorite-item:hover .favorite-menu { visibility: visible; }
+
+.favorite-menu:hover {
+  background: var(--hover-bg);
+}
+
+.favorite-menu svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Popup menu shown by clicking the 3-dot button. */
+.favorite-popup-menu {
+  position: fixed;
+  background: var(--card-bg);
+  border: 1px solid var(--warm-gray);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 1100;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+.favorite-popup-item {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  padding: 7px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.favorite-popup-item:hover {
+  background: var(--hover-bg);
+}
+
+.favorite-popup-item-danger { color: var(--accent-rose); }
+.favorite-popup-item-danger:hover { background: rgba(179, 90, 90, 0.08); }
+
+/* ---- Logo upload row inside the form ---- */
+.favorites-form-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Same outer dimensions as the Upload / Reset buttons next to it. */
+.favorites-logo-preview {
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  background: var(--paper);
+  border: 1px solid var(--warm-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.favorites-logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.favorites-logo-placeholder {
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.favorites-logo-upload,
+.favorites-logo-reset {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 0;
+  padding: 5px 8px;
+  cursor: pointer;
+  border: 1px solid var(--warm-gray);
+  background: transparent;
+  color: var(--ink);
+  transition: all 0.15s;
+}
+
+.favorites-logo-upload:hover,
+.favorites-logo-reset:hover {
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+}
+
+.favorites-empty {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 12px 6px;
+  line-height: 1.5;
+}
+
+/* Star + Pin buttons share the same outline/filled pattern. Fill state is
+   driven by `.active` class so toggling the class instantly flips between
+   hollow and solid, no JS attribute munging. */
+.chip-star svg,
+.chip-pin svg {
+  fill: none;
+}
+
+.chip-star.active svg,
+.chip-pin.active svg {
+  fill: currentColor;
+}
+
+.chip-star          { color: var(--muted); }
+.chip-star:hover    { color: var(--accent-amber); }
+.chip-star.active,
+.chip-star.active:hover { color: var(--accent-amber); }
+
+.chip-pin           { color: var(--muted); }
+.chip-pin:hover     { color: var(--accent-sage); }
+.chip-pin.active,
+.chip-pin.active:hover  { color: var(--accent-sage); }
+
+

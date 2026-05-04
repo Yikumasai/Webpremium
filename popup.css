@@ -294,6 +294,64 @@ body.dark-mode .setting-description {
     color: #999;
 }
 
+.advanced-features {
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+body.dark-mode .advanced-features {
+    background: #2d2d2d;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.advanced-features summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 12px;
+    font-weight: 600;
+    color: #1a73e8;
+    user-select: none;
+}
+
+.advanced-features summary::-webkit-details-marker {
+    display: none;
+}
+
+.advanced-features summary::after {
+    content: '展开';
+    float: right;
+    font-size: 12px;
+    color: #666;
+    font-weight: 400;
+}
+
+.advanced-features[open] summary::after {
+    content: '收起';
+}
+
+body.dark-mode .advanced-features summary {
+    color: #8ab4f8;
+}
+
+body.dark-mode .advanced-features summary::after {
+    color: #999;
+}
+
+.advanced-setting-group {
+    margin-bottom: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border-top: 1px solid #e0e0e0;
+}
+
+body.dark-mode .advanced-setting-group {
+    box-shadow: none;
+    border-top-color: #444;
+}
+
 /* 状态部分 */
 .status-section, .preload-section, .nearby-section, .stats-section, .rules-section {
     margin-bottom: 20px;
