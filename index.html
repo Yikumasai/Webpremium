@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tab-home</title>
+
+  <!-- Google Fonts: DM Sans is the only typeface used across the page. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+
+
+  <!-- ================================================================
+       HEADER — greeting on the left
+       ================================================================ -->
+  <header>
+    <div class="header-left">
+      <!-- "Sunday · 03/05/2026" — written by getDateDisplay() in app.js -->
+      <div class="date" id="dateDisplay"></div>
+    </div>
+    <div class="header-right">
+      <!-- tab-home duplicate-tabs pill — appears when more than one new-tab page
+           is open. Hidden by default; app.js shows it as inline-flex. -->
+      <div class="tab-cleanup-banner" id="tabOutDupeBanner" style="display:none">
+        <div class="tab-cleanup-left">
+          <div class="tab-cleanup-text">
+            <strong id="tabOutDupeCount"></strong> tab-home tabs open
+          </div>
+        </div>
+        <button class="tab-cleanup-btn" data-action="close-tabout-dupes">Keep one</button>
+      </div>
+      <!-- Theme toggle (sun/moon) — flips between light and dark -->
+      <button class="theme-toggle" id="themeToggle" data-action="toggle-theme" title="Toggle theme"></button>
+      <!-- Language toggle — shows the OTHER language; click to switch -->
+      <button class="lang-toggle" id="langToggle" data-action="toggle-lang"></button>
+    </div>
+  </header>
+
+  <!-- ================================================================
+       MAIN CONTENT AREA — three-column layout
+       Left:   long-term favorites (pinned URLs that persist forever)
+       Middle: open tabs (domain/mission cards)
+       Right:  saved for later checklist
+       Each column scrolls independently — the page itself never scrolls.
+       ================================================================ -->
+  <div class="dashboard-columns" id="dashboardColumns">
+
+    <!-- LEFT COLUMN: Long-term favorites -->
+    <div class="favorites-column" id="favoritesColumn">
+      <div class="section-header">
+        <h2>Favorites</h2>
+        <div class="section-line"></div>
+        <button class="favorites-add-btn" id="favoritesAddToggle" data-action="toggle-favorite-form" title="Add a favorite">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+        </button>
+      </div>
+
+      <!-- List of favorites — populated by renderFavoritesColumn() -->
+      <div class="favorites-list" id="favoritesList"></div>
+
+      <!-- Empty state -->
+      <div class="favorites-empty" id="favoritesEmpty" style="display:none">
+        Nothing pinned yet. Click + to add a URL, or star a tab on the right.
+      </div>
+    </div>
+
+    <!-- MIDDLE COLUMN: Open tabs (pinned at the top, regular below) -->
+    <div class="active-section" id="openTabsSection" style="display:none">
+
+      <!-- Pinned-tabs sub-section — only shown when at least one tab is pinned. -->
+      <div class="active-subsection" id="pinnedSubSection" style="display:none">
+        <div class="section-header">
+          <h2 id="pinnedSectionTitle">Pinned</h2>
+          <div class="section-line"></div>
+          <div class="section-count" id="pinnedSectionCount"></div>
+        </div>
+        <div class="missions" id="pinnedMissions"></div>
+      </div>
+
+      <!-- Regular open-tabs sub-section. -->
+      <div class="active-subsection" id="openTabsSubSection">
+        <div class="section-header">
+          <h2 id="openTabsSectionTitle">Right now</h2>
+          <div class="section-line"></div>
+          <div class="section-count" id="openTabsSectionCount"></div>
+          <!-- "Close all N tabs" lives at the right edge of the header -->
+          <div class="section-action" id="openTabsSectionAction"></div>
+        </div>
+        <div class="missions" id="openTabsMissions"></div>
+      </div>
+
+    </div>
+
+  </div><!-- end .dashboard-columns -->
+
+  <!-- ================================================================
+       FOOTER — global stats + refresh control
+       ================================================================ -->
+  <footer>
+    <div class="footer-stats">
+      <div class="stat">
+        <div class="stat-num" id="statTabs">—</div>
+        <div class="stat-label">Open tabs</div>
+      </div>
+    </div>
+    <div class="last-refresh">
+      <span style="color: var(--muted); font-size: 11px;">tab-home by <a href="https://github.com/Yikumasai/Webpremium" target="_top" style="color: var(--muted); text-decoration: underline; text-underline-offset: 2px;">Yikumasai</a> · forked from <a href="https://github.com/zarazhangrui/tab-out" target="_top" style="color: var(--muted); text-decoration: underline; text-underline-offset: 2px;">tab-out</a> by <a href="https://x.com/zarazhangrui" target="_top" style="color: var(--muted); text-decoration: underline; text-underline-offset: 2px;">Zara</a></span>
+    </div>
+  </footer>
+
+</div><!-- end .container -->
+
+<!-- ================================================================
+     FAVORITES ADD / EDIT MODAL — floats over the page; backdrop closes
+     ================================================================ -->
+<div class="favorites-modal" id="favoritesModal" style="display:none">
+  <form class="favorites-form favorites-form-modal" id="favoritesForm">
+    <label class="favorites-form-label" for="favoritesUrlInput" id="favoritesUrlLabel">URL</label>
+    <input type="text" class="favorites-form-input" id="favoritesUrlInput" placeholder="https://..." required autocomplete="off" spellcheck="false">
+    <label class="favorites-form-label" for="favoritesTitleInput" id="favoritesTitleLabel">Title</label>
+    <input type="text" class="favorites-form-input" id="favoritesTitleInput" placeholder="Title (optional)" autocomplete="off">
+
+    <!-- Custom logo: preview + upload + reset -->
+    <div class="favorites-form-logo">
+      <div class="favorites-logo-preview" id="favoritesLogoPreview">
+        <span class="favorites-logo-placeholder" id="favoritesLogoPlaceholder">Auto</span>
+        <img id="favoritesLogoPreviewImg" alt="" style="display:none">
+      </div>
+      <label for="favoritesLogoInput" class="favorites-logo-upload">Upload logo</label>
+      <input type="file" id="favoritesLogoInput" accept="image/*" hidden>
+      <button type="button" class="favorites-logo-reset" data-action="reset-favorite-logo">Reset</button>
+    </div>
+
+    <div class="favorites-form-actions">
+      <!-- Delete only shown while editing an existing favorite -->
+      <button type="button" class="favorites-form-delete" id="favoritesFormDelete" data-action="delete-from-form" style="display:none">Delete</button>
+      <div class="favorites-form-actions-right">
+        <button type="button" class="favorites-form-cancel" data-action="cancel-favorite-form">Cancel</button>
+        <button type="submit" class="favorites-form-submit" id="favoritesFormSubmit">Add</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- ================================================================
+     CONFIRM DIALOG — generic in-page modal that replaces window.confirm()
+     ================================================================ -->
+<div class="confirm-modal" id="confirmModal" style="display:none">
+  <div class="confirm-card">
+    <div class="confirm-message" id="confirmMessage"></div>
+    <div class="confirm-actions">
+      <button type="button" class="confirm-cancel" id="confirmCancelBtn">Cancel</button>
+      <button type="button" class="confirm-ok" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     TOAST — floats above everything, used for action confirmations
+     Hidden by default via CSS (opacity:0, translateY)
+     ================================================================ -->
+<div class="toast" id="toast">
+  <!-- Checkmark circle icon (Heroicons outline) -->
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+  </svg>
+  <span id="toastText"></span>
+</div>
+
+<!-- Personal config (gitignored) — defines LOCAL_LANDING_PAGE_PATTERNS etc. -->
+<!-- If the file doesn't exist, that's fine — app.js uses sensible defaults. -->
+<script src="config.local.js" onerror="/* no personal config, that's fine */"></script>
+
+<!-- Main dashboard logic — loads last so the DOM is ready -->
+<script src="app.js"></script>
+</body>
+</html>

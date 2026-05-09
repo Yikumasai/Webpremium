@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>链接预加载器</title>
+    <title data-i18n="appName">链接预加载器</title>
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <img src="icons/icon32.png" alt="图标" class="icon">
-            <h1>链接预加载器</h1>
-            <button id="themeToggle" class="theme-toggle" title="切换主题">🌓</button>
+            <button id="languageToggle" class="language-toggle" data-i18n-title="languageToggleTitle" title="切换语言">EN</button>
+            <img src="icons/icon32.png" alt="图标" class="icon" data-i18n-alt="iconAlt">
+            <h1 data-i18n="appName">链接预加载器</h1>
+            <button id="themeToggle" class="theme-toggle" data-i18n-title="switchTheme" title="切换主题">🌓</button>
         </div>
         
         <div class="tabs">
-            <button class="tab-btn active" data-tab="settings">设置</button>
-            <button class="tab-btn" data-tab="stats">统计</button>
-            <button class="tab-btn" data-tab="rules">网站规则</button>
+            <button class="tab-btn active" data-tab="settings" data-i18n="tabSettings">设置</button>
+            <button class="tab-btn" data-tab="stats" data-i18n="tabStats">统计</button>
+            <button class="tab-btn" data-tab="rules" data-i18n="tabRules">网站规则</button>
         </div>
         
         <div class="content">
-            <!-- 设置标签页 -->
             <div class="tab-content active" id="settings-tab">
                 <div class="setting-group">
                     <div class="setting-item">
@@ -29,13 +29,13 @@
                             <input type="checkbox" id="enablePreload" checked>
                             <span class="slider"></span>
                         </label>
-                        <span class="setting-label">启用预加载</span>
+                        <span class="setting-label" data-i18n="enablePreload">启用预加载</span>
                     </div>
                 </div>
 
                 <div class="setting-group">
                     <div class="setting-item">
-                        <label for="hoverDelay">悬停延迟 (毫秒):</label>
+                        <label for="hoverDelay" data-i18n="hoverDelay">悬停延迟 (毫秒):</label>
                         <input type="range" id="hoverDelay" min="0" max="1000" value="100" step="50">
                         <span id="hoverDelayValue">100</span>
                     </div>
@@ -43,7 +43,7 @@
 
                 <div class="setting-group">
                     <div class="setting-item">
-                        <label for="maxPreloads">最大预加载数:</label>
+                        <label for="maxPreloads" data-i18n="maxPreloads">最大预加载数:</label>
                         <input type="range" id="maxPreloads" min="1" max="10" value="5" step="1">
                         <span id="maxPreloadsValue">5</span>
                     </div>
@@ -51,15 +51,15 @@
 
                 <div class="setting-group">
                     <div class="setting-item">
-                        <label for="preloadMode">预加载模式:</label>
+                        <label for="preloadMode" data-i18n="preloadMode">预加载模式:</label>
                         <select id="preloadMode">
-                            <option value="hidden-tab">预加载窗口 (推荐)</option>
-                            <option value="iframe">iframe预加载</option>
+                            <option value="hidden-tab" data-i18n="modeHiddenTab">预加载窗口 (推荐)</option>
+                            <option value="iframe" data-i18n="modeIframe">iframe预加载</option>
                         </select>
                     </div>
                     <div class="setting-description">
-                        <small>预加载窗口：完整预加载，主窗口无干扰</small><br>
-                        <small>iframe预加载：轻量级，兼容性好</small>
+                        <small data-i18n="modeHiddenDesc">预加载窗口：完整预加载，主窗口无干扰</small><br>
+                        <small data-i18n="modeIframeDesc">iframe预加载：轻量级，兼容性好</small>
                     </div>
                 </div>
 
@@ -69,10 +69,10 @@
                             <input type="checkbox" id="networkAware" checked>
                             <span class="slider"></span>
                         </label>
-                        <span class="setting-label">网络感知</span>
+                        <span class="setting-label" data-i18n="networkAware">网络感知</span>
                     </div>
                     <div class="setting-description">
-                        <small>自动检测网络状态，慢速网络时减少预加载</small>
+                        <small data-i18n="networkAwareDesc">自动检测网络状态，慢速网络时减少预加载</small>
                     </div>
                 </div>
 
@@ -82,96 +82,159 @@
                             <input type="checkbox" id="showIndicator" checked>
                             <span class="slider"></span>
                         </label>
-                        <span class="setting-label">显示预加载指示器</span>
+                        <span class="setting-label" data-i18n="showIndicator">显示预加载指示器</span>
                     </div>
                     <div class="setting-description">
-                        <small>在链接旁显示小圆点表示预加载状态</small>
+                        <small data-i18n="showIndicatorDesc">在链接旁显示小圆点表示预加载状态</small>
                     </div>
                 </div>
 
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="mutePreload" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="setting-label" data-i18n="mutePreload">预加载静音</span>
+                    </div>
+                    <div class="setting-description">
+                        <small data-i18n="mutePreloadDesc">预加载标签页默认静音，避免视频/直播自动播放出声；激活后在地址栏点击可解除静音</small>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="smartTabDedup" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="setting-label" data-i18n="smartTabDedup">智能标签页去重与跳转</span>
+                    </div>
+                    <div class="setting-description">
+                        <small data-i18n="smartTabDedupDesc">预加载前检测当前窗口是否已打开目标网页；点击时优先跳转到已有标签页，避免重复打开</small>
+                    </div>
+                </div>
+
+                <details class="advanced-features" id="advancedFeatures">
+                    <summary id="advancedFeaturesToggle" data-i18n="advancedFeatures">高级功能</summary>
+
+                    <div class="setting-group advanced-setting-group">
+                        <div class="setting-item">
+                            <label class="switch">
+                                <input type="checkbox" id="tabOutEnabled">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="setting-label">Tab-out</span>
+                        </div>
+                        <div class="setting-description">
+                            <small data-i18n="tabOutDesc">开启后新标签页将显示 Tab-out 标签页管理面板，并启用标签数量徽章与收藏右键菜单</small>
+                        </div>
+                    </div>
+
+                </details>
+
                 <div class="status-section">
-                    <h3>状态信息</h3>
+                    <h3 data-i18n="statusInfo">状态信息</h3>
                     <div class="status-item">
-                        <span>当前状态:</span>
-                        <span id="currentStatus" class="status-enabled">已启用</span>
+                        <span data-i18n="currentStatus">当前状态:</span>
+                        <span id="currentStatus" class="status-enabled" data-i18n="statusEnabled">已启用</span>
                     </div>
                     <div class="status-item">
-                        <span>预加载计数:</span>
+                        <span data-i18n="preloadCount">预加载计数:</span>
                         <span id="preloadCount">0</span>
                     </div>
                 </div>
 
                 <div class="preload-section">
-                    <h3>当前预加载</h3>
+                    <h3 data-i18n="currentPreloads">当前预加载</h3>
                     <div id="preloadList" class="preload-list">
-                        <div class="empty-message">暂无预加载内容</div>
+                        <div class="empty-message" data-i18n="noPreloads">暂无预加载内容</div>
                     </div>
                 </div>
 
                 <div class="nearby-section">
-                    <h3>附近链接</h3>
+                    <h3 data-i18n="nearbyLinks">附近链接</h3>
                     <div id="nearbyList" class="nearby-list">
-                        <div class="empty-message">暂无附近链接</div>
+                        <div class="empty-message" data-i18n="noNearbyLinks">暂无附近链接</div>
+                    </div>
+                </div>
+
+                <div class="setting-group shortcut-setting-group">
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="shortcutsEnabled">
+                            <span class="slider"></span>
+                        </label>
+                        <span class="setting-label" data-i18n="shortcutsEnabled">启用快捷键 (Alt+P / Alt+C)</span>
+                    </div>
+                    <div class="setting-description">
+                        <small data-i18n="shortcutsDesc">Alt+P 开关预加载 | Alt+C 清理缓存。默认关闭，避免与系统或其它扩展冲突。</small>
+                    </div>
+                    <div id="shortcutStatus" class="shortcut-status disabled" data-i18n="shortcutsDisabledDetail">
+                        快捷键默认关闭；Alt+P / Alt+C 不会执行操作。
+                    </div>
+                    <div class="shortcut-actions">
+                        <button id="checkShortcutConflicts" class="btn btn-secondary btn-sm" data-i18n="checkConflicts">检测冲突</button>
+                        <button id="openShortcutSettings" class="btn btn-secondary btn-sm" data-i18n="chromeShortcutSettings">Chrome 快捷键设置</button>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button id="clearCache" class="btn btn-secondary">清理缓存</button>
-                    <button id="saveSettings" class="btn btn-primary" title="设置已自动保存">设置已自动保存</button>
+                    <button id="clearCache" class="btn btn-secondary" data-i18n="clearCache">清理缓存</button>
+                    <button id="saveSettings" class="btn btn-primary" data-i18n="settingsAutoSaved" data-i18n-title="settingsAutoSaved" title="设置已自动保存">设置已自动保存</button>
                 </div>
             </div>
 
-            <!-- 统计标签页 -->
             <div class="tab-content" id="stats-tab">
                 <div class="stats-section">
-                    <h3>统计数据</h3>
+                    <h3 data-i18n="statsData">统计数据</h3>
                     <div class="stat-item">
-                        <span class="stat-label">总预加载次数:</span>
+                        <span class="stat-label" data-i18n="totalPreloads">总预加载次数:</span>
                         <span class="stat-value" id="totalPreloads">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">命中次数:</span>
+                        <span class="stat-label" data-i18n="hitCount">命中次数:</span>
                         <span class="stat-value" id="hitCount">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">命中率:</span>
+                        <span class="stat-label" data-i18n="hitRate">命中率:</span>
                         <span class="stat-value" id="hitRate">0%</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">节省时间:</span>
+                        <span class="stat-label" data-i18n="savedTime">节省时间:</span>
                         <span class="stat-value" id="savedTime">0ms</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">会话时长:</span>
-                        <span class="stat-value" id="sessionTime">0分钟</span>
+                        <span class="stat-label" data-i18n="sessionTime">会话时长:</span>
+                        <span class="stat-value" id="sessionTime">0秒</span>
                     </div>
                 </div>
                 <div class="button-group">
-                    <button id="resetStats" class="btn btn-secondary">重置统计</button>
+                    <button id="resetStats" class="btn btn-secondary" data-i18n="resetStats">重置统计</button>
                 </div>
             </div>
 
-            <!-- 网站规则标签页 -->
             <div class="tab-content" id="rules-tab">
                 <div class="rules-section">
-                    <h3>网站规则</h3>
+                    <h3 data-i18n="siteRules">网站规则</h3>
                     <div id="rulesList" class="rules-list">
-                        <div class="empty-message">暂无网站规则</div>
+                        <div class="empty-message" data-i18n="noSiteRules">暂无网站规则</div>
                     </div>
                 </div>
                 <div class="button-group">
-                    <button id="enableAllRules" class="btn btn-secondary">全部启用</button>
-                    <button id="disableAllRules" class="btn btn-secondary">全部禁用</button>
-                    <button id="addRule" class="btn btn-primary">添加规则</button>
+                    <button id="enableAllRules" class="btn btn-secondary" data-i18n="enableAll">全部启用</button>
+                    <button id="disableAllRules" class="btn btn-secondary" data-i18n="disableAll">全部禁用</button>
+                    <button id="deleteAllRules" class="btn btn-danger" data-i18n="deleteAll">全部删除</button>
+                    <button id="addRule" class="btn btn-primary" data-i18n="addRule">添加规则</button>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>快捷键: Alt+P 开关 | Alt+C 清理</p>
+            <p id="shortcutFooterText" data-i18n="shortcutFooterDisabled">快捷键: 已关闭</p>
         </div>
     </div>
 
-    <script src="popup.js"></script>
+    <script type="module" src="popup.js"></script>
 </body>
 </html>

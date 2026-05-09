@@ -54,7 +54,8 @@ body.dark-mode h1 {
     color: #8ab4f8;
 }
 
-.theme-toggle {
+.theme-toggle,
+.language-toggle {
     background: none;
     border: none;
     font-size: 20px;
@@ -64,11 +65,29 @@ body.dark-mode h1 {
     transition: background-color 0.2s;
 }
 
-.theme-toggle:hover {
+.language-toggle {
+    margin-right: 8px;
+    border: 1px solid #dadce0;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    color: #1a73e8;
+    background: white;
+}
+
+.theme-toggle:hover,
+.language-toggle:hover {
     background: rgba(0, 0, 0, 0.1);
 }
 
-body.dark-mode .theme-toggle:hover {
+body.dark-mode .language-toggle {
+    border-color: #555;
+    color: #8ab4f8;
+    background: #2d2d2d;
+}
+
+body.dark-mode .theme-toggle:hover,
+body.dark-mode .language-toggle:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
@@ -292,6 +311,125 @@ body.dark-mode select:focus {
 
 body.dark-mode .setting-description {
     color: #999;
+}
+
+.advanced-features {
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+body.dark-mode .advanced-features {
+    background: #2d2d2d;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.advanced-features summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 12px;
+    font-weight: 600;
+    color: #1a73e8;
+    user-select: none;
+}
+
+.advanced-features summary::-webkit-details-marker {
+    display: none;
+}
+
+.advanced-features summary::after {
+    content: attr(data-i18n-expand);
+    float: right;
+    font-size: 12px;
+    color: #666;
+    font-weight: 400;
+}
+
+.advanced-features[open] summary::after {
+    content: attr(data-i18n-collapse);
+}
+
+body.dark-mode .advanced-features summary {
+    color: #8ab4f8;
+}
+
+body.dark-mode .advanced-features summary::after {
+    color: #999;
+}
+
+.advanced-setting-group {
+    margin-bottom: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* 快捷键状态提示 */
+.shortcut-status {
+    margin-top: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.shortcut-status.disabled {
+    background: #f1f3f4;
+    color: #888;
+}
+
+.shortcut-status.ok {
+    background: #e6f4ea;
+    color: #1e7e34;
+}
+
+.shortcut-status.warning {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.shortcut-status.info {
+    background: #e8f0fe;
+    color: #1a73e8;
+}
+
+body.dark-mode .shortcut-status.disabled {
+    background: #2a2a2a;
+    color: #888;
+}
+
+body.dark-mode .shortcut-status.ok {
+    background: #1b3a22;
+    color: #81c784;
+}
+
+body.dark-mode .shortcut-status.warning {
+    background: #3a2800;
+    color: #ffb74d;
+}
+
+body.dark-mode .shortcut-status.info {
+    background: #1a2a4a;
+    color: #8ab4f8;
+}
+
+/* 快捷键操作按钮行 */
+.shortcut-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+body.dark-mode .advanced-setting-group {
+    box-shadow: none;
+    border-top-color: #444;
 }
 
 /* 状态部分 */
@@ -628,6 +766,15 @@ body.dark-mode .btn-primary:hover {
     background: #e8eaed;
 }
 
+.btn-danger {
+    background: #ea4335;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c5221f;
+}
+
 body.dark-mode .btn-secondary {
     background: #2d2d2d;
     color: #e0e0e0;
@@ -636,6 +783,15 @@ body.dark-mode .btn-secondary {
 
 body.dark-mode .btn-secondary:hover {
     background: #3d3d3d;
+}
+
+body.dark-mode .btn-danger {
+    background: #b71c1c;
+    color: #fff;
+}
+
+body.dark-mode .btn-danger:hover {
+    background: #8b1515;
 }
 
 .btn:active {
