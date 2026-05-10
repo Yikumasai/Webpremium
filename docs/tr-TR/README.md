@@ -6,7 +6,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MPL--2.0-green.svg)
 ![Chrome](https://img.shields.io/badge/Chrome-Extension-orange.svg)
 
@@ -40,10 +40,12 @@ Webpremium, akıllı ön yükleme teknolojisi ile **sıfır gecikme** web taray�
 
 - 🎯 **Sıfır Gecikme Deneyimi** - Fareyle üzerine gelince ön yükleme, tıklayınca anında açılma
 - 🪟 **Ön Yükleme Penceresi Teknolojisi** - Bağımsız pencerede ön yükleme, ana pencereye müdahale yok
-- 🔄 **Akıllı Sekme Yönetimi** - Zaten açık sekmeleri otomatik algılar ve oraya atlar
+- 🔄 **Akıllı Sekme Yineleme Önleme** - Yinelenen sekmeleri otomatik algılar ve tıklandığında mevcuda atlar
+- 🏠 **Tab-out Yeni Sekme Sayfası** - Favoriler ve sekme düzenleme ile güzel yeni sekme yönetim paneli
 - 📊 **Gerçek Zamanlı İstatistikler** - Ön yükleme etkisini ve tasarruf edilen zamanı takip eder
 - 🎨 **Modern Arayüz** - Karanlık mod desteği, temiz ve güzel arayüz
 - ⚙️ **Yüksek Özelleştirilebilir** - Kişisel ihtiyaçları karşılamak için zengin yapılandırma seçenekleri
+- 🌐 **Çok Dilli Destek** - Basitleştirilmiş Çince, Geleneksel Çince, İngilizce ve daha fazlasını destekler
 
 ---
 
@@ -56,33 +58,50 @@ Webpremium, akıllı ön yükleme teknolojisi ile **sıfır gecikme** web taray�
 - **Ayarlanabilir Gecikme Süresi** - 0-1000ms fare üzerine gelme gecikmesi yapılandırmasını destekler
 - **Yakın Bağlantı Tahmini** - Fare yakınındaki bağlantıları akıllıca tanır ve ön yükler
 - **Ön Yükleme Miktarı Kontrolü** - Maksimum eşzamanlı ön yükleme sayısını ayarlayabilir (1-10)
+- **LRU Önbellek Tahliyesi** - Sınır aşıldığında en az kullanılan ön yüklemeleri otomatik olarak kaldırır
 
 #### 2. Ön Yükleme Modları
 - **Ön Yükleme Penceresi Modu (Önerilen)** - Bağımsız küçültülmüş pencerede ön yükleme, tam sayfa yükleme, ana pencereye müdahale yok
 - **iframe Ön Yükleme Modu** - Hafif ön yükleme yöntemi, iyi uyumluluk
 
-#### 3. Akıllı Sekme Yönetimi
-- **Yinelenen Sekme Algılama** - Aynı URL'ye sahip sekmeleri otomatik algılar
-- **Otomatik Atlama** - Zaten açık bağlantılara tıklandığında mevcut sekmeye otomatik atlar
-- **Sorunsuz Hareket** - Ön yüklenmiş sekmeler ana pencereye sorunsuz taşınır
-- **Bellek Optimizasyonu** - Yinelenen sekmeleri azaltır, bellek kullanımını düşürür
+#### 3. Akıllı Sekme Yineleme Önleme & Atlama (Smart Tab Dedup)
+- **Yinelenen Sekme Algılama** - Ön yülkemeden önce hedef sayfanın mevcut pencerede zaten açık olup olmadığını algılar
+- **Otomatik Atlama** - Zaten açık bağlantılara tıklandığında mevcut sekmeye otomatik atlar, yinelemeyi önler
+- **Ön Yüklemeyi Atla** - Hedef sayfa zaten açıksa ön yüklemeyi atlar ve doğrudan geçer
+- **Sorunsuz Deneyim** - Hedef sekme ve pencereye otomatik olarak odaklanır
 
-#### 4. Ağ Farkındalığı
+#### 4. Tab-out Yeni Sekme Sayfası Yönetimi
+- **Güzel Yeni Sekme Sayfası** - Varsayılan yeni sekme sayfasını zengin özellikli yönetim paneliyle değiştirir
+- **Üç Sütunlu Düzen** - Solda favoriler, ortada açık sekmeler, sağda sonra oku
+- **Etki Alanına Göre Gruplama** - Açık sekmeleri etki alanına göre otomatik gruplar
+- **Favoriler İşlevi** - Özel simgelerle sık kullanılan siteler için uzun süreli favoriler
+- **Sekme Sayısı Rozeti** - Araç çubuğu simgesi mevcut açık sekme sayısını gösterir
+- **Yinelenen Sekme Algılama** - Yinelenen yeni sekme sayfalarını algılar ve kapatmayı ister
+- **Hızlı Eylemler** - Sekme kapatma, sabitleme, favorilere ekleme vb. tek tıklamayla
+- **Karanlık Mod** - Açık/karanlık tema geçişi desteği
+- **Çok Dilli** - Çince/İngilizce arayüz geçişi desteği
+
+#### 5. Ağ Farkındalığı
 - **Akıllı Algılama** - Ağ durumunu otomatik algılar
 - **Uyarlanabilir Strateji** - Yavaş ağlarda otomatik olarak ön yüklemeyi azaltır
 - **Veri Tasarrufu** - Zayıf ağ ortamlarında veri israfını önler
 
-#### 5. Görsel Gösterge
+#### 6. Ön Yükleme Sessizleştirme
+- **Varsayılan Olarak Sessiz** - Ön yüklenmiş sekmeler video/canlı yayın otomatik oynatmasını önlemek için varsayılan olarak sessizdir
+- **Manuel Sesi Açma** - Etkinleştirildikten sonra sesi açmak için adres çubuğuna tıklayın
+
+#### 7. Görsel Gösterge
 - **Ön Yükleme Durumu Gösterimi** - Bağlantının yanında ön yükleme durumunu gösteren küçük nokta
 - **Yükleme Animasyonu** - Turuncu nokta yükleme devam ediyor anlamına gelir
 - **Yükleme Tamamlandı İşareti** - Yeşil nokta ön yükleme tamamlandı anlamına gelir
 
-#### 6. Site Kuralları Yönetimi
+#### 8. Site Kuralları Yönetimi
 - **Özel Kurallar** - Belirli siteler için ön yüklemeyi etkinleştirir veya devre dışı bırakır
 - **Alan Adı Seviyesi Kontrolü** - Alan adına göre hassas ön yükleme kontrolü
 - **Sağ Tık Menüsü** - Mevcut sitenin ön yükleme durumunu hızlıca değiştirir
+- **Varsayılan Kurallar** - Douyin gibi video siteleri için ön yükleme varsayılan olarak devre dışı
 
-#### 7. İstatistikler ve Analiz
+#### 9. İstatistikler ve Analiz
 - **Ön Yükleme Sayısı** - Toplam ön yükleme sayısını kaydeder
 - **İsabet Oranı İstatistikleri** - Ön yüklemenin etkili kullanım oranını hesaplar
 - **Zaman Tasarrufu** - Tasarruf edilen toplam zamanı istatistikler
@@ -90,13 +109,16 @@ Webpremium, akıllı ön yükleme teknolojisi ile **sıfır gecikme** web taray�
 
 ### Kısayol Tuşları
 
-- `Alt + P` - Ön yükleme işlevini hızlıca aç/kapat
-- `Alt + C` - Tüm ön yükleme önbelleğini temizle
+- `Alt + P` - Ön yükleme işlevini hızlıca aç/kapat (ayarlardan etkinleştirilmelidir)
+- `Alt + C` - Tüm ön yükleme önbelleğini temizle (ayarlardan etkinleştirilmelidir)
+- Kısayol tuşları, sistem veya diğer uzantılarla çatışmayı önlemek için varsayılan olarak devre dışıdır
 
 ### Sağ Tık Menüsü
 
 - **Bu bağlantıyı ön yükle** - Seçili bağlantıyı manuel olarak ön yükle
 - **Bu sitede ön yüklemeyi etkinleştir/devre dışı bırak** - Mevcut sitenin ön yükleme durumunu hızlıca değiştir
+- **Sayfayı favorilere ekle** - Mevcut sayfayı Tab-out favorilerine ekler
+- **Bağlantıyı favorilere ekle** - Bağlantıyı Tab-out favorilerine ekler
 
 ---
 
@@ -147,10 +169,32 @@ Webpremium, akıllı ön yükleme teknolojisi ile **sıfır gecikme** web taray�
    - Ön yükleme tamamlandığında bağlantının yanında yeşil nokta görünecek
    - Anında açmak için bağlantıya tıkla
 
-3. **İstatistikleri görüntüle**
+3. **Akıllı Sekme Atlama**
+   - Hedef sayfa mevcut pencerede zaten açıkken
+   - Bağlantıya tıklamak otomatik olarak mevcut sekmeye atlar
+   - Aynı sayfayı iki kez açmayı önler
+
+4. **İstatistikleri görüntüle**
    - Uzantı simgesine tıkla
    - "İstatistikler" sekmesine geç
    - Ön yükleme etkisini ve tasarruf edilen zamanı gör
+
+### Tab-out Yeni Sekme Sayfası
+
+1. **Tab-out'u Etkinleştir**
+   - Ayarlar panelini aç
+   - "Gelişmiş Özellikler" altında "Tab-out Yeni Sekme Sayfası"nı etkinleştir
+   - Yönetim panelini görmek için yeni bir sekme aç
+
+2. **Favorileri Kullan**
+   - Favorileri eklemek için sol üst köşedeki "+" düğmesine tıkla
+   - Bir sekmeye sağ tıklayıp "Favorilere ekle"yi seç
+   - Favoriler hızlı erişim için kalıcı olarak saklanır
+
+3. **Sekmeleri Yönet**
+   - Orta sütun tüm açık sekmeleri gösterir (etki alanına göre gruplandırılmış)
+   - Sayfasına atlamak için bir sekmeye tıkla
+   - Bir sekmeyi veya tüm bir etki alanı grubunu kapatmak için "×"e tıkla
 
 ### Gelişmiş Ayarlar
 
@@ -167,6 +211,12 @@ Webpremium, akıllı ön yükleme teknolojisi ile **sıfır gecikme** web taray�
 #### Ön Yükleme Modunu Seç
 - **Ön Yükleme Penceresi Modu**: Tam ön yükleme, en iyi deneyim (önerilen)
 - **iframe Modu**: Hafif, iyi uyumluluk
+
+#### Kısayolları Etkinleştir
+- Ayarlar panelini aç
+- "Kısayolları etkinleştir" seçeneğini aç
+- Ön yüklemeyi değiştirmek için `Alt+P`, önbelleği temizlemek için `Alt+C` kullan
+- Chrome kısayol ayarlarında kısayolları özelleştir
 
 #### Site Kuralları Yönetimi
 1. "Site kuralları" sekmesine geç
@@ -260,6 +310,10 @@ Bu yöntemin avantajları:
 | Ön yükleme modu | Ön yükleme yöntemi | Ön yükleme penceresi | Ön yükleme penceresi |
 | Ağ farkındalığı | Ağ durumuna göre ayarla | Açık | Açık |
 | Göstergeyi göster | Ön yükleme durumu noktasını göster | Açık | Açık |
+| Ön yükleme sessizleştirme | Ön yüklenmiş sekmeleri varsayılan olarak sessize al | Açık | Açık |
+| Sekme yineleme önleme | Açık sekmelere algıla ve atla | Açık | Açık |
+| Tab-out Yeni Sekme Sayfası | Yönetim panelini etkinleştir | Kapalı | İhtiyaca göre |
+| Kısayollar | Alt+P / Alt+C'yi etkinleştir | Kapalı | İhtiyaca göre |
 
 ---
 
@@ -283,11 +337,34 @@ C: Hayır. Ön yükleme penceresi hemen küçültülür ve tarayıcı deneyimini
 ### S: Belirli siteler için ön yüklemeyi devre dışı bırakabilir miyim?
 C: Evet. "Site kuralları" sekmesinde alan adı kuralları ekleyin veya sayfaya sağ tıklayıp "Bu sitede ön yüklemeyi etkinleştir/devre dışı bırak"ı seçin.
 
+### S: Akıllı Sekme Yineleme Önleme nedir?
+C: Tıklamak üzere olduğunuz bağlantı mevcut pencerede zaten açık olduğunda, uzantı yeni bir sekme açmak yerine otomatik olarak mevcut sekmeye atlar. Bu, yinelenen sekmeleri önler ve bellek tasarrufu sağlar.
+
+### S: Tab-out nedir?
+C: Tab-out, tüm açık sekmelerinizi (etki alanına göre gruplandırılmış), sık kullanılan siteler için favorileri, sonra oku yönetimini ve daha fazlasını gösteren güzel bir yeni sekme yönetim panelidir.
+
+### S: Ön yüklenmiş sekmeler ses çalacak mı?
+C: Hayır. Ön yüklenmiş sekmeler video veya canlı yayın sitelerinden gelen sesin otomatik oynatılmasını önlemek için varsayılan olarak sessize alınır. Etkinleştirildikten sonra sesi açmak için adres çubuğuna tıklayabilirsiniz.
+
+### S: Kısayollarım neden çalışmıyor?
+C: Kısayollar varsayılan olarak devre dışıdır ve ayarlardan manuel olarak etkinleştirilmelidir. Bu, sistem veya diğer uzantı kısayollarıyla çatışmayı önler.
+
 ---
 
 ## 🚀 Sürüm Geçmişi
 
-### v2.0.0 (Mevcut Sürüm)
+### v2.1.0 (Mevcut Sürüm)
+- ✨ **Akıllı Sekme Yineleme Önleme & Atlama** - Ön yülkemeden önce hedef sayfanın mevcut pencerede açık olup olmadığını algılar; tıklamada mevcut sekmeye atlar
+- ✨ **Tab-out Yeni Sekme Sayfası Yönetimi** - Etki alanı gruplama, favoriler ve sayı rozeti ile güzel yeni sekme paneli
+- ✨ **Ön Yükleme Sessizleştirme** - Ön yüklenmiş sekmeler otomatik ses oynatmayı önlemek için varsayılan olarak sessize alınır
+- ✨ **Kısayol Çatışma Algılama** - Kısayol çatışmalarını otomatik olarak algılar ve uyarır
+- ✨ **Çok Dilli Destek** - Basitleştirilmiş Çince, Geleneksel Çince ve İngilizce arayüzleri destekler
+- ✨ **LRU Önbellek Tahliyesi** - Ön yükleme sınırı aşıldığında en az kullanılan içeriği otomatik olarak kaldırır
+- ✨ **Varsayılan Site Kuralları** - Douyin gibi video siteleri için ön yükleme varsayılan olarak devre dışı
+- 🔧 Çoklu pencere yeniden kullanımı ile optimize edilmiş ön yükleme penceresi yönetimi
+- 🔧 Optimize edilmiş sekme izleme ve temizleme mantığı
+
+### v2.0.0
 - ✨ Yeni ön yükleme penceresi teknolojisi
 - ✨ Akıllı sekme yönetimi
 - ✨ Site kuralları sistemi
@@ -308,35 +385,58 @@ C: Evet. "Site kuralları" sekmesinde alan adı kuralları ekleyin veya sayfaya 
 
 Issue ve Pull Request'ler memnuniyetle karşılanır!
 
-### Geliştirme Ortamı Kurulumu
 
-```bash
-# Depoyu klonla
-git clone https://github.com/Yikumasai/webpremium.git
-
-# Dizine gir
-cd webpremium
-
-# Chrome'da uzantıyı yükle
-# chrome://extensions/ → Geliştirici modu → Paketlenmemiş uzantı yükle
-```
 
 ### Proje Yapısı
 
 ```
 webpremium/
 ├── manifest.json          # Uzantı yapılandırma dosyası
-├── background.js          # Arka plan servis betiği
-├── content.js            # İçerik betiği
-├── popup.html            # Popup penceresi HTML
-├── popup.js              # Popup penceresi betiği
-├── popup.css             # Popup penceresi stili
-├── icons/                # Simge dosyaları
+├── background.js          # Arka plan servis betiği giriş noktası
+├── content.js             # İçerik betiği giriş noktası
+├── popup.html             # Popup penceresi HTML
+├── popup.js               # Popup penceresi betiği giriş noktası
+├── popup.css              # Popup penceresi stili
+├── index.html             # Tab-out Yeni Sekme Sayfası HTML
+├── app.js                 # Tab-out Yeni Sekme Sayfası mantığı
+├── style.css              # Tab-out Yeni Sekme Sayfası stili
+├── icons/                 # Simge dosyaları
 │   ├── icon16.png
 │   ├── icon32.png
 │   ├── icon48.png
 │   └── icon128.png
-└── README.md             # Dokümantasyon
+├── src/                   # Modüler kaynak kodu
+│   ├── background/        # Arka plan modülleri
+│   │   ├── preload-window.js   # Ön yükleme penceresi yönetimi
+│   │   ├── router.js           # Mesaj yönlendirme
+│   │   ├── settings-store.js   # Ayarlar deposu
+│   │   ├── site-rules.js       # Site kuralları
+│   │   ├── stats.js            # İstatistikler
+│   │   ├── tab-deduper.js      # Sekme yineleme önleyici
+│   │   ├── tab-out.js          # Tab-out işlevi
+│   │   └── tab-tracker.js      # Sekme izleyici
+│   ├── content/           # İçerik betiği modülleri
+│   │   ├── indicator.js        # Görsel gösterge
+│   │   ├── link-tracker.js     # Bağlantı izleyici
+│   │   ├── main.js             # Ana giriş noktası
+│   │   ├── network-aware.js    # Ağ farkındalığı
+│   │   ├── preloader.js        # Ön yükleyici
+│   │   └── settings.js         # Ayar yönetimi
+│   ├── popup/             # Popup modülleri
+│   │   ├── api.js              # API sarıcısı
+│   │   ├── dom.js              # DOM yardımcıları
+│   │   ├── i18n.js             # Uluslararasılaştırma
+│   │   ├── rules-view.js       # Kurallar görünümü
+│   │   ├── settings-view.js    # Ayarlar görünümü
+│   │   ├── stats-view.js       # İstatistik görünümü
+│   │   ├── tabs.js             # Sekme değiştirme
+│   │   ├── theme.js            # Tema
+│   │   └── toast.js            # Toast mesajları
+│   └── shared/            # Paylaşılan modüller
+│       ├── constants.js        # Sabitler
+│       ├── logger.js           # Günlüklendirme
+│       └── url-utils.js        # URL yardımcıları
+└── README.md              # Dokümantasyon
 ```
 
 ---
@@ -364,7 +464,17 @@ Webpremium'u kullanan ve destekleyen tüm kullanıcılara teşekkürler!
 Bu proje size yardımcı olduysa, lütfen bize bir ⭐️ Star verin!
 
 ---
+## Star History
 
+<a href="https://www.star-history.com/#Yikumasai/Webpremium&type=timeline&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&legend=top-left" />
+ </picture>
+</a>
+
+---
 <div align="center">
 
 **Daha hızlı tarama, daha iyi deneyim**

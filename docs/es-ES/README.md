@@ -6,7 +6,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MPL--2.0-green.svg)
 ![Chrome](https://img.shields.io/badge/Chrome-Extension-orange.svg)
 
@@ -40,10 +40,12 @@ Webpremium es una extensión revolucionaria de Chrome que logra una experiencia 
 
 - 🎯 **Experiencia de Cero Latencia** - Precarga al pasar el cursor, abre al hacer clic
 - 🪟 **Tecnología de Ventana de Precarga** - Precarga en ventana independiente, sin interferir con la ventana principal
-- 🔄 **Gestión Inteligente de Pestañas** - Detecta automáticamente y salta a pestañas ya abiertas
+- 🔄 **Deduplicación Inteligente de Pestañas** - Detecta automáticamente pestañas duplicadas y salta a la existente al hacer clic
+- 🏠 **Página Tab-out de Nueva Pestaña** - Hermoso panel de gestión de nueva pestaña con favoritos y organización
 - 📊 **Estadísticas en Tiempo Real** - Rastrea el efecto de precarga y el tiempo ahorrado
 - 🎨 **Interfaz Moderna** - Soporte de modo oscuro, interfaz limpia y hermosa
 - ⚙️ **Altamente Personalizable** - Opciones de configuración ricas para satisfacer necesidades personalizadas
+- 🌐 **Soporte Multilingüe** - Soporta chino simplificado, chino tradicional, inglés y más
 
 ---
 
@@ -56,33 +58,50 @@ Webpremium es una extensión revolucionaria de Chrome que logra una experiencia 
 - **Tiempo de Retraso Ajustable** - Soporta configuración de retraso de hover de 0-1000ms
 - **Predicción de Enlaces Cercanos** - Identifica inteligentemente enlaces cercanos al cursor y los precarga
 - **Control de Cantidad de Precarga** - Configura el número máximo de precargas simultáneas (1-10)
+- **Eliminación de Caché LRU** - Elimina automáticamente las precargas menos utilizadas cuando se excede el límite
 
 #### 2. Modos de Precarga
 - **Modo Ventana de Precarga (Recomendado)** - Precarga en ventana minimizada independiente, carga completa de página, sin interferir con la ventana principal
 - **Modo Precarga iframe** - Método de precarga ligero, buena compatibilidad
 
-#### 3. Gestión Inteligente de Pestañas
-- **Detección de Pestañas Duplicadas** - Detecta automáticamente pestañas con la misma URL
-- **Salto Automático** - Al hacer clic en enlaces ya abiertos, salta automáticamente a la pestaña existente
-- **Movimiento Fluido** - Las pestañas precargadas se mueven sin problemas a la ventana principal
-- **Optimización de Memoria** - Reduce pestañas duplicadas, disminuye el uso de memoria
+#### 3. Deduplicación Inteligente de Pestañas y Salto (Smart Tab Dedup)
+- **Detección de Pestañas Duplicadas** - Detecta si la página objetivo ya está abierta en la ventana actual antes de la precarga
+- **Salto Automático** - Salta automáticamente a la pestaña existente al hacer clic en enlaces ya abiertos, evita duplicados
+- **Omitir Precarga** - Omite la precarga y salta directamente si la página objetivo ya está abierta
+- **Experiencia Fluida** - Enfoca automáticamente la pestaña y ventana objetivo
 
-#### 4. Conciencia de Red
+#### 4. Gestión de Página Tab-out de Nueva Pestaña
+- **Hermosa Página de Nueva Pestaña** - Reemplaza la página predeterminada con un panel de gestión rico en funciones
+- **Diseño de Tres Columnas** - Favoritos a la izquierda, pestañas abiertas en el centro, lectura posterior a la derecha
+- **Agrupación por Dominio** - Agrupa automáticamente las pestañas abiertas por dominio
+- **Función de Favoritos** - Favoritos a largo plazo de sitios usados frecuentemente con iconos personalizados
+- **Insignia de Conteo de Pestañas** - El icono de la barra de herramientas muestra el número actual de pestañas abiertas
+- **Detección de Pestañas Duplicadas** - Detecta y solicita cerrar páginas de nueva pestaña duplicadas
+- **Acciones Rápidas** - Cerrar pestaña, fijar, agregar a favoritos, etc. con un clic
+- **Modo Oscuro** - Soporte para cambio entre tema claro/oscuro
+- **Multilingüe** - Soporte para cambio de interfaz en chino/inglés
+
+#### 5. Conciencia de Red
 - **Detección Inteligente** - Detecta automáticamente el estado de la red
 - **Estrategia Adaptativa** - Reduce automáticamente la precarga en redes lentas
 - **Ahorro de Datos** - Evita desperdiciar datos en entornos de red débil
 
-#### 5. Indicador Visual
+#### 6. Silenciar Precarga
+- **Silenciado por Defecto** - Las pestañas precargadas están silenciadas por defecto para evitar reproducción automática de video/transmisiones en vivo
+- **Desilenciar Manualmente** - Después de activar, haz clic en la barra de direcciones para desilenciar
+
+#### 7. Indicador Visual
 - **Visualización de Estado de Precarga** - Muestra un punto pequeño junto al enlace indicando el estado de precarga
 - **Animación de Carga** - Punto naranja indica carga en progreso
 - **Marca de Carga Completa** - Punto verde indica precarga completada
 
-#### 6. Gestión de Reglas de Sitios
+#### 8. Gestión de Reglas de Sitios
 - **Reglas Personalizadas** - Habilita o deshabilita la precarga para sitios específicos
 - **Control a Nivel de Dominio** - Control de precarga preciso por dominio
 - **Menú Contextual** - Cambia rápidamente el estado de precarga del sitio actual
+- **Reglas Predeterminadas** - Precarga deshabilitada por defecto para sitios de video como Douyin
 
-#### 7. Estadísticas y Análisis
+#### 9. Estadísticas y Análisis
 - **Número de Precargas** - Registra el número total de precargas
 - **Estadísticas de Tasa de Aciertos** - Calcula la tasa de utilización efectiva de precarga
 - **Tiempo Ahorrado** - Estadísticas del tiempo total ahorrado
@@ -90,13 +109,16 @@ Webpremium es una extensión revolucionaria de Chrome que logra una experiencia 
 
 ### Atajos de Teclado
 
-- `Alt + P` - Activar/desactivar rápidamente la función de precarga
-- `Alt + C` - Limpiar toda la caché de precarga
+- `Alt + P` - Activar/desactivar rápidamente la función de precarga (debe habilitarse en la configuración)
+- `Alt + C` - Limpiar toda la caché de precarga (debe habilitarse en la configuración)
+- Los atajos están deshabilitados por defecto para evitar conflictos con el sistema u otras extensiones
 
 ### Menú Contextual
 
 - **Precargar este enlace** - Precarga manualmente el enlace seleccionado
 - **Habilitar/Deshabilitar precarga en este sitio** - Cambia rápidamente el estado de precarga del sitio actual
+- **Agregar página a favoritos** - Agrega la página actual a los favoritos de Tab-out
+- **Agregar enlace a favoritos** - Agrega el enlace a los favoritos de Tab-out
 
 ---
 
@@ -147,10 +169,32 @@ Webpremium es una extensión revolucionaria de Chrome que logra una experiencia 
    - Aparecerá un punto verde junto al enlace indicando precarga completa
    - Haz clic en el enlace para abrirlo instantáneamente
 
-3. **Ver estadísticas**
+3. **Salto Inteligente de Pestañas**
+   - Cuando la página objetivo ya está abierta en la ventana actual
+   - Hacer clic en el enlace salta automáticamente a la pestaña existente
+   - Evita abrir la misma página dos veces
+
+4. **Ver estadísticas**
    - Haz clic en el icono de la extensión
    - Cambia a la pestaña "Estadísticas"
    - Ver el efecto de precarga y el tiempo ahorrado
+
+### Página Tab-out de Nueva Pestaña
+
+1. **Habilitar Tab-out**
+   - Abrir panel de configuración
+   - Activa "Página Tab-out de Nueva Pestaña" en "Funciones Avanzadas"
+   - Abre una nueva pestaña para ver el panel de gestión
+
+2. **Usar Favoritos**
+   - Haz clic en el botón "+" en la esquina superior izquierda para agregar favoritos
+   - Haz clic derecho en una pestaña y selecciona "Agregar a favoritos"
+   - Los favoritos persisten para acceso rápido
+
+3. **Gestionar Pestañas**
+   - La columna central muestra todas las pestañas abiertas (agrupadas por dominio)
+   - Haz clic en una pestaña para saltar a su página
+   - Haz clic en "×" para cerrar una pestaña o todo un grupo de dominio
 
 ### Configuración Avanzada
 
@@ -167,6 +211,12 @@ Webpremium es una extensión revolucionaria de Chrome que logra una experiencia 
 #### Seleccionar Modo de Precarga
 - **Modo Ventana de Precarga**: Precarga completa, mejor experiencia (recomendado)
 - **Modo iframe**: Ligero, buena compatibilidad
+
+#### Habilitar Atajos
+- Abrir panel de configuración
+- Activa la opción "Habilitar atajos"
+- Usa `Alt+P` para alternar precarga, `Alt+C` para limpiar caché
+- Personaliza los atajos en la configuración de atajos de Chrome
 
 #### Gestión de Reglas de Sitios
 1. Cambiar a la pestaña "Reglas de sitios"
@@ -229,6 +279,27 @@ Ventajas de este método:
 
 ---
 
+## 🎨 Vista Previa de la Interfaz
+
+### Panel de Configuración
+- Control simple de interruptores
+- Ajuste intuitivo de deslizadores
+- Lista de precarga en tiempo real
+- Visualización de enlaces cercanos
+
+### Panel de Estadísticas
+- Número total de precargas
+- Porcentaje de tasa de aciertos
+- Estadísticas de tiempo ahorrado
+- Visualización de duración de sesión
+
+### Reglas de Sitios
+- Gestión de lista de dominios
+- Estado habilitado/deshabilitado
+- Agregar/eliminar rápido
+
+---
+
 ## 🔧 Opciones de Configuración
 
 | Opción | Descripción | Valor Predeterminado | Valor Recomendado |
@@ -239,6 +310,10 @@ Ventajas de este método:
 | Modo de precarga | Método de precarga | Ventana de precarga | Ventana de precarga |
 | Conciencia de red | Ajustar según estado de red | Activado | Activado |
 | Mostrar indicador | Mostrar punto de estado de precarga | Activado | Activado |
+| Silenciar precarga | Silenciar pestañas precargadas por defecto | Activado | Activado |
+| Deduplicación de pestañas | Detectar y saltar a pestañas abiertas | Activado | Activado |
+| Página Tab-out de Nueva Pestaña | Habilitar panel de gestión | Desactivado | Según necesidad |
+| Atajos | Habilitar Alt+P / Alt+C | Desactivado | Según necesidad |
 
 ---
 
@@ -262,11 +337,34 @@ R: No. La ventana de precarga se minimiza inmediatamente y no afecta en absoluto
 ### P: ¿Puedo deshabilitar la precarga para sitios específicos?
 R: Sí. Agrega reglas de dominio en la pestaña "Reglas de sitios", o haz clic derecho en la página y selecciona "Habilitar/Deshabilitar precarga en este sitio".
 
+### P: ¿Qué es la Deduplicación Inteligente de Pestañas?
+R: Cuando el enlace que vas a hacer clic ya está abierto en la ventana actual, la extensión salta automáticamente a la pestaña existente en lugar de abrir una nueva. Esto evita pestañas duplicadas y ahorra memoria.
+
+### P: ¿Qué es Tab-out?
+R: Tab-out es un hermoso panel de gestión de nueva pestaña que muestra todas tus pestañas abiertas (agrupadas por dominio), favoritos para sitios usados frecuentemente, gestión de lectura posterior y más.
+
+### P: ¿Las pestañas precargadas reproducirán sonido?
+R: No. Las pestañas precargadas están silenciadas por defecto para evitar la reproducción automática de sonido de sitios de video o transmisiones en vivo. Después de activar, puedes hacer clic en la barra de direcciones para desilenciar.
+
+### P: ¿Por qué no funcionan mis atajos?
+R: Los atajos están deshabilitados por defecto y deben habilitarse manualmente en la configuración. Esto evita conflictos con atajos del sistema u otras extensiones.
+
 ---
 
 ## 🚀 Historial de Versiones
 
-### v2.0.0 (Versión Actual)
+### v2.1.0 (Versión Actual)
+- ✨ **Deduplicación Inteligente de Pestañas y Salto** - Detecta si la página objetivo ya está abierta en la ventana actual antes de la precarga; salta a la pestaña existente al hacer clic
+- ✨ **Gestión de Página Tab-out de Nueva Pestaña** - Hermoso panel de nueva pestaña con agrupación por dominio, favoritos e insignia de conteo
+- ✨ **Silenciar Precarga** - Pestañas precargadas silenciadas por defecto para evitar reproducción automática de sonido
+- ✨ **Detección de Conflictos de Atajos** - Detecta y advierte automáticamente sobre conflictos de atajos
+- ✨ **Soporte Multilingüe** - Soporta interfaces en chino simplificado, chino tradicional e inglés
+- ✨ **Eliminación de Caché LRU** - Elimina automáticamente el contenido menos utilizado cuando se excede el límite de precarga
+- ✨ **Reglas de Sitio Predeterminadas** - Precarga deshabilitada por defecto para sitios de video como Douyin
+- 🔧 Gestión optimizada de ventana de precarga con reutilización de múltiples ventanas
+- 🔧 Lógica optimizada de seguimiento y limpieza de pestañas
+
+### v2.0.0
 - ✨ Nueva tecnología de ventana de precarga
 - ✨ Gestión inteligente de pestañas
 - ✨ Sistema de reglas de sitios
@@ -286,6 +384,60 @@ R: Sí. Agrega reglas de dominio en la pestaña "Reglas de sitios", o haz clic d
 ## 🤝 Contribución
 
 ¡Se aceptan Issues y Pull Requests!
+
+
+
+### Estructura del Proyecto
+
+```
+webpremium/
+├── manifest.json          # Archivo de configuración de la extensión
+├── background.js          # Punto de entrada del script de servicio en segundo plano
+├── content.js             # Punto de entrada del script de contenido
+├── popup.html             # HTML de la ventana emergente
+├── popup.js               # Punto de entrada del script de la ventana emergente
+├── popup.css              # Estilo de la ventana emergente
+├── index.html             # HTML de la página Tab-out de nueva pestaña
+├── app.js                 # Lógica de la página Tab-out de nueva pestaña
+├── style.css              # Estilo de la página Tab-out de nueva pestaña
+├── icons/                 # Archivos de iconos
+│   ├── icon16.png
+│   ├── icon32.png
+│   ├── icon48.png
+│   └── icon128.png
+├── src/                   # Código fuente modular
+│   ├── background/        # Módulos en segundo plano
+│   │   ├── preload-window.js   # Gestión de ventana de precarga
+│   │   ├── router.js           # Enrutamiento de mensajes
+│   │   ├── settings-store.js   # Almacenamiento de configuración
+│   │   ├── site-rules.js       # Reglas de sitios
+│   │   ├── stats.js            # Estadísticas
+│   │   ├── tab-deduper.js      # Deduplicación de pestañas
+│   │   ├── tab-out.js          # Función Tab-out
+│   │   └── tab-tracker.js      # Seguimiento de pestañas
+│   ├── content/           # Módulos de script de contenido
+│   │   ├── indicator.js        # Indicador visual
+│   │   ├── link-tracker.js     # Seguimiento de enlaces
+│   │   ├── main.js             # Punto de entrada principal
+│   │   ├── network-aware.js    # Conciencia de red
+│   │   ├── preloader.js        # Precargador
+│   │   └── settings.js         # Gestión de configuración
+│   ├── popup/             # Módulos de ventana emergente
+│   │   ├── api.js              # Envoltorio de API
+│   │   ├── dom.js              # Utilidades DOM
+│   │   ├── i18n.js             # Internacionalización
+│   │   ├── rules-view.js       # Vista de reglas
+│   │   ├── settings-view.js    # Vista de configuración
+│   │   ├── stats-view.js       # Vista de estadísticas
+│   │   ├── tabs.js             # Cambio de pestañas
+│   │   ├── theme.js            # Tema
+│   │   └── toast.js            # Mensajes toast
+│   └── shared/            # Módulos compartidos
+│       ├── constants.js        # Constantes
+│       ├── logger.js           # Registro
+│       └── url-utils.js        # Utilidades URL
+└── README.md              # Documentación
+```
 
 ---
 
@@ -312,7 +464,17 @@ Este proyecto adopta la licencia MPL-2.0. Para más detalles, consulta el archiv
 Si este proyecto te ayuda, ¡danos una ⭐️ Star!
 
 ---
+## Star History
 
+<a href="https://www.star-history.com/#Yikumasai/Webpremium&type=timeline&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&legend=top-left" />
+ </picture>
+</a>
+
+---
 <div align="center">
 
 **Navegación más rápida, mejor experiencia**
