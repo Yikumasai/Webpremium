@@ -125,7 +125,11 @@ Webpremium 是一款革命性的 Chrome 浏览器插件，通过智能预加载�
 
 ## 📦 安装方法
 
-### 方法一：开发者模式安装
+### 方法一：Chrome 网上应用店
+搜索 link preloader：
+> https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj
+
+### 方法二：开发者模式安装
 
 1. **下载源代码**
    在[release](https://github.com/Yikumasai/Webpremium/releases)页面下载
@@ -150,10 +154,6 @@ Webpremium 是一款革命性的 Chrome 浏览器插件，通过智能预加载�
 6. **完成安装**
    - 扩展程序图标会出现在浏览器工具栏
    - 点击图标即可打开设置面板
-
-
-### 方法二：Chrome 网上应用店
-> 待上架
 
 ---
 
