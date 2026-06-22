@@ -14,7 +14,6 @@ import { findExistingTabByUrl } from './src/background/tab-deduper.js';
 import {
   addTabOutFavorite,
   createTabOutContextMenus,
-  maybeRedirectNewTabToTabOut,
   updateTabOutBadge,
 } from './src/background/tab-out.js';
 
@@ -61,7 +60,6 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 });
 
 chrome.tabs.onCreated.addListener((tab) => {
-  maybeRedirectNewTabToTabOut(tab, settings).catch(() => {});
   updateTabOutBadge(settings).catch(() => {});
 });
 
@@ -75,7 +73,6 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 // 当 owner tab 导航到不同 origin 时，清理它遗留的预加载
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  maybeRedirectNewTabToTabOut(tab, settings).catch(() => {});
   updateTabOutBadge(settings).catch(() => {});
   if (!changeInfo.url) return;
   const newOrigin = parseUrl(changeInfo.url)?.origin || '';

@@ -6,7 +6,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MPL--2.0-green.svg)
 ![Chrome](https://img.shields.io/badge/Chrome-Extension-orange.svg)
 
@@ -40,12 +40,10 @@ Webpremium ist eine revolutionäre Chrome-Erweiterung, die durch intelligente Pr
 
 - 🎯 **Null-Latenz-Erlebnis** - Preload beim Hover, sofortiges Öffnen beim Klick
 - 🪟 **Preload-Fenster-Technologie** - Preload in unabhängigem Fenster, keine Störung des Hauptfensters
-- 🔄 **Intelligente Tab-Deduplizierung** - Erkennt automatisch doppelte Tabs und springt beim Klicken zum vorhandenen Tab
-- 🏠 **Tab-out Neuer Tab** - Schöne Verwaltung des neuen Tabs mit Lesezeichen und Tab-Organisation
+- 🔄 **Intelligente Tab-Verwaltung** - Erkennt automatisch bereits geöffnete Tabs und springt dorthin
 - 📊 **Echtzeit-Statistiken** - Verfolgt Preload-Effekte und eingesparte Zeit
 - 🎨 **Modernes Interface** - Dark-Mode-Unterstützung, sauberes und schönes Interface
 - ⚙️ **Hochgradig anpassbar** - Umfangreiche Konfigurationsoptionen für individuelle Bedürfnisse
-- 🌐 **Mehrsprachige Unterstützung** - Unterstützt vereinfachtes Chinesisch, traditionelles Chinesisch, Englisch und mehr
 
 ---
 
@@ -58,50 +56,33 @@ Webpremium ist eine revolutionäre Chrome-Erweiterung, die durch intelligente Pr
 - **Einstellbare Verzögerungszeit** - Unterstützt Hover-Verzögerung von 0-1000ms
 - **Vorhersage naher Links** - Erkennt intelligent Links in der Nähe des Cursors und lädt sie vor
 - **Preload-Mengen-Kontrolle** - Konfigurierbare maximale Anzahl gleichzeitiger Preloads (1-10)
-- **LRU-Cache-Verdrängung** - Verdrängt automatisch die am längsten nicht verwendeten Preloads bei Überschreitung des Limits
 
 #### 2. Preload-Modi
 - **Preload-Fenster-Modus (Empfohlen)** - Preload in unabhängigem minimierten Fenster, vollständiges Laden der Seite, keine Störung des Hauptfensters
 - **iframe-Preload-Modus** - Leichtgewichtige Preload-Methode, gute Kompatibilität
 
-#### 3. Intelligente Tab-Deduplizierung & Sprung (Smart Tab Dedup)
-- **Doppelte Tab-Erkennung** - Erkennt vor dem Preloading, ob die Zielseite bereits im aktuellen Fenster geöffnet ist
-- **Automatischer Sprung** - Springt beim Klicken auf bereits geöffnete Links automatisch zum vorhandenen Tab und vermeidet Duplikate
-- **Preload überspringen** - Überspringt das Preloading und springt direkt, wenn die Zielseite bereits geöffnet ist
-- **Nahtloses Erlebnis** - Fokussiert automatisch den Zieltab und das Zielfenster
+#### 3. Intelligente Tab-Verwaltung
+- **Doppelte Tab-Erkennung** - Erkennt automatisch Tabs mit derselben URL
+- **Automatischer Sprung** - Beim Klicken auf bereits geöffnete Links automatischer Sprung zum vorhandenen Tab
+- **Nahtlose Bewegung** - Vorgeladene Tabs bewegen sich nahtlos zum Hauptfenster
+- **Speicher-Optimierung** - Reduziert doppelte Tabs, verringert Speichernutzung
 
-#### 4. Tab-out Neuer Tab Verwaltung
-- **Schöne Neuer Tab Seite** - Ersetzt den standardmäßigen neuen Tab durch ein funktionsreiches Verwaltungs-Panel
-- **Drei-Spalten-Layout** - Lesezeichen links, geöffnete Tabs in der Mitte, später lesen rechts
-- **Domain-Gruppierung** - Gruppiert geöffnete Tabs automatisch nach Domain
-- **Lesezeichen** - Langfristige Lesezeichen für häufig verwendete Websites mit benutzerdefinierten Symbolen
-- **Tab-Anzahl-Badge** - Symbolleisten-Symbol zeigt aktuelle Anzahl geöffneter Tabs
-- **Erkennung doppelter Tabs** - Erkennt und fordert auf, doppelte neue Tabs zu schließen
-- **Schnellaktionen** - Tab schließen, anheften, zu Lesezeichen hinzufügen usw. mit einem Klick
-- **Dark Mode** - Unterstützung für Helligkeits-/Dunkel-Theme-Wechsel
-- **Mehrsprachig** - Unterstützung für Chinesisch/Englisch-Schnittstellenwechsel
-
-#### 5. Netzwerk-Bewusstsein
+#### 4. Netzwerk-Bewusstsein
 - **Intelligente Erkennung** - Erkennt automatisch den Netzwerkstatus
 - **Adaptive Strategie** - Reduziert automatisch Preloading bei langsamen Netzwerken
 - **Daten-Einsparung** - Vermeidet Datenverschwendung in schwachen Netzwerkumgebungen
 
-#### 6. Preload-Stummschaltung
-- **Standardmäßig stumm** - Vorgeladene Tabs sind standardmäßig stumm geschaltet, um automatisches Abspielen von Video-/Live-Streams zu vermeiden
-- **Manuelles Aufheben der Stummschaltung** - Klicken Sie nach der Aktivierung auf die Adressleiste, um die Stummschaltung aufzuheben
-
-#### 7. Visueller Indikator
+#### 5. Visueller Indikator
 - **Preload-Status-Anzeige** - Zeigt kleinen Punkt neben dem Link zur Anzeige des Preload-Status
 - **Lade-Animation** - Orangefarbener Punkt zeigt laufendes Laden an
 - **Lade-Abschluss-Markierung** - Grüner Punkt zeigt abgeschlossenes Preloading an
 
-#### 8. Website-Regelverwaltung
+#### 6. Website-Regelverwaltung
 - **Benutzerdefinierte Regeln** - Aktiviert oder deaktiviert Preloading für bestimmte Websites
 - **Domain-Level-Kontrolle** - Präzise Preload-Kontrolle auf Domain-Ebene
 - **Kontextmenü** - Schnelles Umschalten des Preload-Status der aktuellen Website
-- **Standardregeln** - Preloading standardmäßig deaktiviert für Videoseiten wie Douyin
 
-#### 9. Statistiken und Analyse
+#### 7. Statistiken und Analyse
 - **Preload-Anzahl** - Zeichnet Gesamtzahl der Preloads auf
 - **Trefferquoten-Statistik** - Berechnet effektive Nutzungsrate des Preloadings
 - **Zeitersparnis** - Statistik der insgesamt eingesparten Zeit
@@ -109,16 +90,13 @@ Webpremium ist eine revolutionäre Chrome-Erweiterung, die durch intelligente Pr
 
 ### Tastenkombinationen
 
-- `Alt + P` - Preload-Funktion schnell ein-/ausschalten (muss in den Einstellungen aktiviert werden)
-- `Alt + C` - Alle Preload-Caches löschen (muss in den Einstellungen aktiviert werden)
-- Tastenkombinationen sind standardmäßig deaktiviert, um Konflikte mit dem System oder anderen Erweiterungen zu vermeiden
+- `Alt + P` - Preload-Funktion schnell ein-/ausschalten
+- `Alt + C` - Alle Preload-Caches löschen
 
 ### Kontextmenü
 
 - **Diesen Link vorladen** - Ausgewählten Link manuell vorladen
 - **Preloading auf dieser Website aktivieren/deaktivieren** - Preload-Status der aktuellen Website schnell umschalten
-- **Seite zu Lesezeichen hinzufügen** - Aktuelle Seite zu Tab-out-Lesezeichen hinzufügen
-- **Link zu Lesezeichen hinzufügen** - Link zu Tab-out-Lesezeichen hinzufügen
 
 ---
 
@@ -169,32 +147,10 @@ Webpremium ist eine revolutionäre Chrome-Erweiterung, die durch intelligente Pr
    - Grüner Punkt erscheint neben dem Link, wenn Preloading abgeschlossen ist
    - Link klicken, um sofort zu öffnen
 
-3. **Intelligenter Tab-Sprung**
-   - Wenn die Zielseite bereits im aktuellen Fenster geöffnet ist
-   - Klicken auf den Link springt automatisch zum vorhandenen Tab
-   - Vermeidet das Öffnen der gleichen Seite zweimal
-
-4. **Statistiken anzeigen**
+3. **Statistiken anzeigen**
    - Erweiterungssymbol klicken
    - Zum Tab "Statistiken" wechseln
    - Preload-Effekt und eingesparte Zeit anzeigen
-
-### Tab-out Neuer Tab
-
-1. **Tab-out aktivieren**
-   - Einstellungspanel öffnen
-   - "Tab-out Neuer Tab" unter "Erweiterte Funktionen" aktivieren
-   - Öffnen Sie einen neuen Tab, um das Verwaltungs-Panel zu sehen
-
-2. **Lesezeichen verwenden**
-   - Klicken Sie auf die "+"-Schaltfläche oben links, um Lesezeichen hinzuzufügen
-   - Rechtsklicken Sie auf einen Tab und wählen Sie "Zu Lesezeichen hinzufügen"
-   - Lesezeichen bleiben für schnellen Zugriff erhalten
-
-3. **Tabs verwalten**
-   - Mittlere Spalte zeigt alle geöffneten Tabs (nach Domain gruppiert)
-   - Klicken Sie auf einen Tab, um zur Seite zu springen
-   - Klicken Sie auf "×", um einen Tab oder eine ganze Domain-Gruppe zu schließen
 
 ### Erweiterte Einstellungen
 
@@ -211,12 +167,6 @@ Webpremium ist eine revolutionäre Chrome-Erweiterung, die durch intelligente Pr
 #### Preload-Modus auswählen
 - **Preload-Fenster-Modus**: Vollständiges Preloading, beste Erfahrung (empfohlen)
 - **iframe-Modus**: Leichtgewichtig, gute Kompatibilität
-
-#### Tastenkombinationen aktivieren
-- Einstellungspanel öffnen
-- Option "Tastenkombinationen aktivieren" einschalten
-- Verwenden Sie `Alt+P` zum Umschalten des Preloadings, `Alt+C` zum Löschen des Caches
-- Tastenkombinationen in den Chrome-Tastenkombinationen-Einstellungen anpassen
 
 #### Website-Regelverwaltung
 1. Zum Tab "Website-Regeln" wechseln
@@ -310,10 +260,6 @@ Vorteile dieser Methode:
 | Preload-Modus | Preload-Methode | Preload-Fenster | Preload-Fenster |
 | Netzwerk-Bewusstsein | Anpassung nach Netzwerkstatus | Ein | Ein |
 | Indikator anzeigen | Preload-Status-Punkt anzeigen | Ein | Ein |
-| Preload-Stummschaltung | Vorgeladene Tabs standardmäßig stumm schalten | Ein | Ein |
-| Tab-Deduplizierung | Erkennung und Sprung zu geöffneten Tabs | Ein | Ein |
-| Tab-out Neuer Tab | Verwaltungs-Panel aktivieren | Aus | Bei Bedarf |
-| Tastenkombinationen | Alt+P / Alt+C aktivieren | Aus | Bei Bedarf |
 
 ---
 
@@ -337,34 +283,11 @@ A: Nein. Das Preload-Fenster wird sofort minimiert und beeinträchtigt Ihr Brows
 ### F: Kann ich Preloading für bestimmte Websites deaktivieren?
 A: Ja. Fügen Sie Domain-Regeln im Tab "Website-Regeln" hinzu oder klicken Sie mit der rechten Maustaste auf die Seite und wählen Sie "Preloading auf dieser Website aktivieren/deaktivieren".
 
-### F: Was ist Intelligente Tab-Deduplizierung?
-A: Wenn der Link, auf den Sie klicken möchten, bereits im aktuellen Fenster geöffnet ist, springt die Erweiterung automatisch zum vorhandenen Tab, anstatt einen neuen zu öffnen. Dies vermeidet doppelte Tabs und spart Speicher.
-
-### F: Was ist Tab-out?
-A: Tab-out ist ein schönes Verwaltungs-Panel für neue Tabs, das alle geöffneten Tabs (nach Domain gruppiert) anzeigt, Lesezeichen für häufig verwendete Websites, später lesen Verwaltung und mehr.
-
-### F: Spielen vorgeladene Tabs Sound ab?
-A: Nein. Vorgeladene Tabs sind standardmäßig stumm geschaltet, um automatisches Abspielen von Sound von Video- oder Live-Stream-Websites zu vermeiden. Nach der Aktivierung können Sie auf die Adressleiste klicken, um die Stummschaltung aufzuheben.
-
-### F: Warum funktionieren meine Tastenkombinationen nicht?
-A: Tastenkombinationen sind standardmäßig deaktiviert und müssen manuell in den Einstellungen aktiviert werden. Dies vermeidet Konflikte mit System- oder anderen Erweiterungs-Tastenkombinationen.
-
 ---
 
 ## 🚀 Versionshistorie
 
-### v2.1.0 (Aktuelle Version)
-- ✨ **Intelligente Tab-Deduplizierung & Sprung** - Erkennt vor dem Preloading, ob die Zielseite im aktuellen Fenster geöffnet ist; springt beim Klicken zum vorhandenen Tab
-- ✨ **Tab-out Neuer Tab Verwaltung** - Schönes Neuer-Tab-Panel mit Domain-Gruppierung, Lesezeichen und Tab-Anzahl-Badge
-- ✨ **Preload-Stummschaltung** - Vorgeladene Tabs standardmäßig stumm, um automatisches Abspielen zu vermeiden
-- ✨ **Tastenkombinations-Konflikterkennung** - Erkennt und warnt automatisch vor Tastenkombinations-Konflikten
-- ✨ **Mehrsprachige Unterstützung** - Unterstützt vereinfachtes Chinesisch, traditionelles Chinesisch und Englisch
-- ✨ **LRU-Cache-Verdrängung** - Verdrängt automatisch die am längsten nicht verwendeten Inhalte bei Überschreitung des Preload-Limits
-- ✨ **Standard-Website-Regeln** - Preloading standardmäßig deaktiviert für Videoseiten wie Douyin
-- 🔧 Optimierte Preload-Fenster-Verwaltung mit Wiederverwendung mehrerer Fenster
-- 🔧 Optimierte Tab-Verfolgung und Bereinigungslogik
-
-### v2.0.0
+### v2.0.0 (Aktuelle Version)
 - ✨ Neue Preload-Fenster-Technologie
 - ✨ Intelligente Tab-Verwaltung
 - ✨ Website-Regelsystem
@@ -385,58 +308,35 @@ A: Tastenkombinationen sind standardmäßig deaktiviert und müssen manuell in d
 
 Issues und Pull Requests sind willkommen!
 
+### Entwicklungsumgebung einrichten
 
+```bash
+# Repository klonen
+git clone https://github.com/Yikumasai/webpremium.git
+
+# Verzeichnis wechseln
+cd webpremium
+
+# Erweiterung in Chrome laden
+# chrome://extensions/ → Entwicklermodus → Entpackte Erweiterung laden
+```
 
 ### Projektstruktur
 
 ```
 webpremium/
 ├── manifest.json          # Erweiterungs-Konfigurationsdatei
-├── background.js          # Einstiegspunkt für Hintergrund-Service-Skript
-├── content.js             # Einstiegspunkt für Content-Skript
-├── popup.html             # Popup-Fenster HTML
-├── popup.js               # Einstiegspunkt für Popup-Fenster Skript
-├── popup.css              # Popup-Fenster Stil
-├── index.html             # Tab-out Neuer Tab HTML
-├── app.js                 # Tab-out Neuer Tab Logik
-├── style.css              # Tab-out Neuer Tab Stil
-├── icons/                 # Icon-Dateien
+├── background.js          # Hintergrund-Service-Skript
+├── content.js            # Content-Skript
+├── popup.html            # Popup-Fenster HTML
+├── popup.js              # Popup-Fenster Skript
+├── popup.css             # Popup-Fenster Stil
+├── icons/                # Icon-Dateien
 │   ├── icon16.png
 │   ├── icon32.png
 │   ├── icon48.png
 │   └── icon128.png
-├── src/                   # Modularer Quellcode
-│   ├── background/        # Hintergrund-Module
-│   │   ├── preload-window.js   # Preload-Fenster-Verwaltung
-│   │   ├── router.js           # Nachrichten-Routing
-│   │   ├── settings-store.js   # Einstellungs-Speicher
-│   │   ├── site-rules.js       # Website-Regeln
-│   │   ├── stats.js            # Statistiken
-│   │   ├── tab-deduper.js      # Tab-Deduplizierung
-│   │   ├── tab-out.js          # Tab-out-Funktion
-│   │   └── tab-tracker.js      # Tab-Verfolgung
-│   ├── content/           # Content-Skript-Module
-│   │   ├── indicator.js        # Visueller Indikator
-│   │   ├── link-tracker.js     # Link-Verfolgung
-│   │   ├── main.js             # Haupt-Einstiegspunkt
-│   │   ├── network-aware.js    # Netzwerk-Bewusstsein
-│   │   ├── preloader.js        # Preloader
-│   │   └── settings.js         # Einstellungs-Verwaltung
-│   ├── popup/             # Popup-Module
-│   │   ├── api.js              # API-Wrapper
-│   │   ├── dom.js              # DOM-Hilfsmittel
-│   │   ├── i18n.js             # Internationalisierung
-│   │   ├── rules-view.js       # Regel-Ansicht
-│   │   ├── settings-view.js    # Einstellungs-Ansicht
-│   │   ├── stats-view.js       # Statistik-Ansicht
-│   │   ├── tabs.js             # Tab-Wechsel
-│   │   ├── theme.js            # Theme
-│   │   └── toast.js            # Toast-Nachrichten
-│   └── shared/            # Gemeinsame Module
-│       ├── constants.js        # Konstanten
-│       ├── logger.js           # Logging
-│       └── url-utils.js        # URL-Hilfsmittel
-└── README.md              # Dokumentation
+└── README.md             # Dokumentation
 ```
 
 ---
@@ -464,17 +364,7 @@ Vielen Dank an alle Benutzer, die Webpremium verwenden und unterstützen!
 Wenn Ihnen dieses Projekt hilft, geben Sie uns bitte einen ⭐️ Star!
 
 ---
-## Star History
 
-<a href="https://www.star-history.com/#Yikumasai/Webpremium&type=timeline&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Yikumasai/Webpremium&type=timeline&legend=top-left" />
- </picture>
-</a>
-
----
 <div align="center">
 
 **Schnelleres Browsen, bessere Erfahrung**

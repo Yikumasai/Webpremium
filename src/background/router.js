@@ -148,6 +148,14 @@ export function createMessageHandler({
     },
 
     [MESSAGE.PING]: () => ({ success: true, message: 'pong' }),
+
+    [MESSAGE.NAVIGATE_TO_DEFAULT_NTP]: (req) => {
+      const tabId = req.tabId;
+      if (tabId) {
+        chrome.tabs.update(tabId, { url: 'chrome://new-tab-page/' }).catch(() => {});
+      }
+      return { success: true };
+    },
   };
 
   return function onMessage(request, sender, sendResponse) {

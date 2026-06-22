@@ -23,14 +23,6 @@ export function createTabOutContextMenus(enabled) {
   });
 }
 
-export async function maybeRedirectNewTabToTabOut(tab, settings) {
-  if (!tab?.id || !(await isEnabled(settings))) return false;
-  const url = tab.pendingUrl || tab.url || '';
-  if (!isBrowserNewTabUrl(url)) return false;
-  await chrome.tabs.update(tab.id, { url: tabOutUrl() }).catch(() => {});
-  return true;
-}
-
 export async function updateTabOutBadge(settings) {
   if (!(await isEnabled(settings))) {
     await chrome.action.setBadgeText({ text: '' }).catch(() => {});
@@ -69,10 +61,6 @@ export async function addTabOutFavorite(url, title = '') {
 
   await chrome.storage.local.set({ [STORAGE_KEYS.favorites]: [...favorites, favorite] });
   return true;
-}
-
-export function isBrowserNewTabUrl(url) {
-  return url === 'chrome://newtab/' || url === 'edge://newtab/' || url === 'about:newtab';
 }
 
 function isRealWebTab(tab) {

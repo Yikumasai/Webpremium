@@ -80,6 +80,7 @@ export const MESSAGE = Object.freeze({
   SITE_RULE_CHANGED: 'siteRuleChanged',
   TOGGLE_PRELOAD: 'togglePreload',
   PING: 'ping',
+  NAVIGATE_TO_DEFAULT_NTP: 'navigateToDefaultNtp',
 });
 
 export const COMMAND = Object.freeze({

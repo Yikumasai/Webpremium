@@ -2378,6 +2378,18 @@ if (chrome.storage && chrome.storage.onChanged) {
    INITIALIZE
    ---------------------------------------------------------------- */
 (async () => {
+  try {
+    const { tabOutEnabled } = await chrome.storage.sync.get('tabOutEnabled');
+    if (tabOutEnabled !== true) {
+      // Navigate to Chrome's real new tab page (bypasses chrome_url_overrides)
+      const tab = await chrome.tabs.getCurrent();
+      if (tab?.id) {
+        chrome.runtime.sendMessage({ action: 'navigateToDefaultNtp', tabId: tab.id });
+      }
+      return;
+    }
+  } catch { return; }
+
   await loadLang();
   await loadTheme();
   await migrateAwayFromFolders();
