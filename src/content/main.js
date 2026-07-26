@@ -2,11 +2,7 @@
 
 import { MESSAGE } from '../shared/constants.js';
 import { createLogger } from '../shared/logger.js';
-import {
-  isDedupCandidateLink,
-  isPreloadableLink,
-  isSearchResultPage,
-} from '../shared/url-utils.js';
+import { isDedupCandidateLink, isPreloadableLink } from '../shared/url-utils.js';
 import { ContentSettings } from './settings.js';
 import { Indicator } from './indicator.js';
 import { Preloader } from './preloader.js';
@@ -134,27 +130,9 @@ export async function run() {
     nearbyTimer = null;
   }
 
-  /**
-   * 搜索结果页上"原生会在当前标签页内跳转"的链接（分页数字、相关搜索、垂类切换等）
-   * 不参与预加载。
-   *
-   * 原因：hidden-tab 模式命中后是把隐藏标签页提升成当前窗口的一个新标签页。对原生
-   * target=_blank 的链接（如百度的搜索结果条目）这与原生行为一致；但对分页数字这类
-   * target=_self 的链接就正好相反 —— 用户点"第 2 页"是想在当前页翻页，不是想开一个
-   * 新标签页。这里直接放行，让浏览器按原生方式在当前标签页内跳转。
-   */
-  function keepNativeNavigation(link) {
-    return (
-      settings.values.searchPageNativeNav !== false &&
-      isSameTabLink(link) &&
-      onSearchResultPage()
-    );
-  }
-
   function onMouseOver(event) {
     const link = closestLink(event);
     if (!link || !isPreloadableLink(link.href, link, window.location.href)) return;
-    if (keepNativeNavigation(link)) return;
     if (preloader.has(link.href)) {
       // 再次 hover 到已预加载的链接 -> 刷新 LRU，避免被淘汰
       preloader.touch(link.href);
@@ -209,8 +187,6 @@ export async function run() {
 
     if (!preloadActive) return;
     if (!isPreloadableLink(href, link, window.location.href)) return;
-    // 即便此前已预加载过（例如刚改了设置），也不劫持这类链接的原生跳转
-    if (keepNativeNavigation(link)) return;
     if (!preloader.isLoaded(href)) return;
     event.preventDefault();
     event.stopPropagation();
@@ -222,7 +198,6 @@ export async function run() {
 
   async function tryPreload(link) {
     if (preloader.has(link.href)) return;
-    if (keepNativeNavigation(link)) return;
     if (dedupActive && openTabs.has(link.href)) {
       log.debug('目标已在当前窗口打开，跳过预加载', link.href);
       return;
@@ -330,24 +305,6 @@ export async function run() {
 function closestLink(event) {
   const target = event.target;
   return typeof target?.closest === 'function' ? target.closest('a[href]') : null;
-}
-
-/** 原生行为是在当前标签页内跳转（没写 target，或写了 _self）。 */
-function isSameTabLink(link) {
-  const target = (link.getAttribute('target') || '').toLowerCase();
-  return !target || target === '_self';
-}
-
-// 搜索结果页判定按 href 记忆：搜索引擎多是 SPA，同一个 content script 会经历多次
-// URL 变化，但每次调用都重新解析 URL 也没必要。
-let searchPageMemo = { href: null, value: false };
-
-function onSearchResultPage() {
-  const href = window.location.href;
-  if (searchPageMemo.href !== href) {
-    searchPageMemo = { href, value: isSearchResultPage(href) };
-  }
-  return searchPageMemo.value;
 }
 
 function sameOrder(a, b) {

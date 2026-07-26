@@ -138,17 +138,6 @@ function canonicalHash(hash) {
   return hash.startsWith('#/') ? hash : '';
 }
 
-/**
- * 是否是已知搜索引擎的搜索结果页（URL_QUERY_RULES 里带 isSearch 标记的条目）。
- */
-export function isSearchResultPage(input) {
-  const url = parseUrl(input);
-  if (!url) return false;
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
-  const host = url.hostname.toLowerCase().replace(/^www\./, '');
-  return queryRuleFor(host, normalizePath(url.pathname))?.isSearch === true;
-}
-
 export function isSameCanonicalUrl(a, b) {
   const keyA = canonicalizeUrl(a);
   return Boolean(keyA) && keyA === canonicalizeUrl(b);

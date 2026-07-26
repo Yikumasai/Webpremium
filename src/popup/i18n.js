@@ -27,9 +27,6 @@ const DICT = {
     smartTabDedup: '智能标签页去重与跳转',
     smartTabDedupDesc:
       '当前窗口已打开的网页不再重复打开，直接跳转到已有标签页；除点击链接外，window.open、书签、地址栏、外部应用打开的重复页也会被拦下。比对时忽略 www./尾斜杠/utm 等差异。中键与 Ctrl+点击（后台打开）不受影响',
-    searchPageNativeNav: '搜索结果页保持原生跳转',
-    searchPageNativeNavDesc:
-      '在百度、Google 等搜索结果页，翻页数字这类原本在当前标签页内跳转的链接不做预加载，点击后仍在当前标签页翻页，不会多开标签页；搜索结果条目（本身就在新标签页打开）不受影响',
     advancedFeatures: '高级功能',
     tabOutDesc: '开启后新标签页将显示 Tab-out 标签页管理面板，并启用标签数量徽章与收藏右键菜单',
     shortcutsEnabled: '启用快捷键 (Alt+P / Alt+C)',
@@ -150,9 +147,6 @@ const DICT = {
     smartTabDedup: 'Smart tab dedupe and jump',
     smartTabDedupDesc:
       'Jump to the tab that already has the page instead of opening a duplicate — covers link clicks plus window.open, bookmarks, the address bar and external apps. Ignores www., trailing slashes and utm-style params. Middle-click and Ctrl+click (background tabs) are left alone',
-    searchPageNativeNav: 'Keep native navigation on search pages',
-    searchPageNativeNavDesc:
-      'On search result pages (Baidu, Google, …), links that natively navigate in the current tab — such as page numbers — are not preloaded, so clicking one pages in place instead of opening another tab. Result links (which open in a new tab anyway) are unaffected',
     advancedFeatures: 'Advanced features',
     tabOutDesc: 'When enabled, new tabs show the Tab-out tab manager, with tab count badge and favorite context menus',
     shortcutsEnabled: 'Enable shortcuts (Alt+P / Alt+C)',
