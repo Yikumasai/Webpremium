@@ -20,6 +20,14 @@ const log = createLogger('tab-guard');
 // （onCreated 时拿到的 pendingUrl 是重定向之前的）
 const REDIRECT_WATCH_MS = 8_000;
 
+// 创建后多久内变成活动标签页，仍算"前台打开"。
+// 不能只看 onCreated 时的 tab.active：Chromium 把新标签页插入 tab strip 与更新
+// 选中状态是两步，onCreated 派发时选中状态可能还没应用，前台打开的标签页照样会
+// 报 active:false。只信这一个字段的话，整条拦截路径会被静默跳过。
+// 所以改成：onCreated 时 active 为真，或随后极短时间内 onActivated 命中它，都算前台。
+// 真正后台打开的（中键 / Ctrl+点击）在这个窗口内不会变成活动标签页，仍然放过。
+const FOREGROUND_GRACE_MS = 1_500;
+
 export class TabGuard {
   /**
    * @param {{
@@ -58,6 +66,9 @@ export class TabGuard {
     chrome.tabs.onUpdated.addListener((tabId, changeInfo) =>
       this._enqueue(() => this._onUpdated(tabId, changeInfo)),
     );
+    chrome.tabs.onActivated.addListener(({ tabId }) =>
+      this._enqueue(() => this._onActivated(tabId)),
+    );
     chrome.tabs.onRemoved.addListener((tabId) => {
       this._unwatch(tabId);
       this.closing.delete(tabId);
@@ -74,16 +85,46 @@ export class TabGuard {
     if (tab?.id == null) return;
     // 只在冷启动时真的等一次；之后 enabled 已缓存，判定不再有额外往返
     if (this.ready) await this.ready;
-    if (!this.enabled) return;
-
-    // 后台打开的一律放过：中键 / Ctrl+点击 表示"我明确要再开一个"，
-    // 预加载标签页也是后台创建的，这条同时把它们排除掉了。
-    if (tab.active !== true) return;
-    if (this.isExcludedWindowId(tab.windowId)) return;
+    if (!this.enabled) {
+      log.debug('跳过：智能去重已关闭', tab.id);
+      return;
+    }
+    if (this.isExcludedWindowId(tab.windowId)) {
+      log.debug('跳过：预加载窗口', tab.id);
+      return;
+    }
 
     const openerKey = await this._openerKey(tab.openerTabId);
-    this._watch(tab.id, { windowId: tab.windowId, openerKey });
-    await this._tryDedupe(tab.id, tab.windowId, tab.pendingUrl || tab.url || '', openerKey);
+    this._watch(tab.id, {
+      windowId: tab.windowId,
+      openerKey,
+      url: tab.pendingUrl || tab.url || '',
+      foreground: tab.active === true,
+      createdAt: Date.now(),
+    });
+    log.debug('新标签页', tab.id, {
+      url: tab.pendingUrl || tab.url || '(空)',
+      active: tab.active,
+      openerTabId: tab.openerTabId,
+      openerKey,
+    });
+
+    if (tab.active === true) await this._tryDedupe(tab.id);
+  }
+
+  /** onCreated 时可能还没报 active，靠这里补上"前台打开"的判定。 */
+  async _onActivated(tabId) {
+    const watched = this.watching.get(tabId);
+    if (!watched || watched.foreground) return;
+    // 超出宽限期说明是用户后来自己切过去的，不是"打开时就在前台"，放过
+    if (Date.now() - watched.createdAt > FOREGROUND_GRACE_MS) {
+      log.debug('跳过：后台标签页（用户稍后手动切换）', tabId);
+      this._unwatch(tabId);
+      return;
+    }
+    watched.foreground = true;
+    log.debug('补判为前台打开', tabId);
+    await this._tryDedupe(tabId);
   }
 
   async _onUpdated(tabId, changeInfo) {
@@ -92,30 +133,43 @@ export class TabGuard {
 
     if (changeInfo.url) {
       if (!this.enabled) return this._unwatch(tabId);
-      await this._tryDedupe(tabId, watched.windowId, changeInfo.url, watched.openerKey);
+      watched.url = changeInfo.url;
+      // 后台标签页不处理；若它还在宽限期内变成前台，_onActivated 会用这个新 URL 重判
+      if (watched.foreground) await this._tryDedupe(tabId);
       return;
     }
     // 加载完成后 URL 已定型；继续观察就会误伤用户之后自己发起的导航
     if (changeInfo.status === 'complete') this._unwatch(tabId);
   }
 
-  async _tryDedupe(tabId, windowId, url, openerKey) {
+  async _tryDedupe(tabId) {
+    const watched = this.watching.get(tabId);
+    if (!watched) return;
+    const { windowId, url, openerKey } = watched;
+
     const key = canonicalizeUrl(url);
-    if (!key) return; // 空白页 / chrome:// / 扩展页
+    if (!key) {
+      log.debug('暂不处理：URL 还不是 http(s)', tabId, url || '(空)');
+      return; // 空白页 / chrome:// / 扩展页，等 onUpdated 带来真正的 URL
+    }
 
     // 来源标签页本身就停在这个网址：用户是在"看着这一页"的情况下又要了一份
     // （点向本页的链接、复制标签页），这是主动意图，放过。
     if (openerKey && openerKey === key) {
+      log.debug('跳过：来源页就是同一个网址（主动再开一份）', tabId, key);
       this._unwatch(tabId);
       return;
     }
 
     const target = await this._findExisting(key, windowId, tabId);
-    if (!target) return;
+    if (!target) {
+      log.debug('未找到重复', tabId, key);
+      return;
+    }
 
     this._unwatch(tabId);
     this.closing.add(tabId);
-    log.debug('拦下重复标签页', url, '-> tab', target.id);
+    log.info('拦下重复标签页', url, '-> tab', target.id);
 
     try {
       // 先激活目标、再关闭新标签页：反过来会让 Chrome 先把焦点丢给邻近标签页，
@@ -123,7 +177,7 @@ export class TabGuard {
       await activateTabForUrl(target, url);
       await chrome.tabs.remove(tabId);
     } catch (err) {
-      log.debug('关闭重复标签页失败', err?.message);
+      log.warn('关闭重复标签页失败', err?.message);
       this.closing.delete(tabId);
     }
   }

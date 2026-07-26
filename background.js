@@ -2,7 +2,7 @@
 // 仅做依赖装配 + 系统事件监听；具体逻辑见 src/background/*
 
 import { COMMAND, CONTEXT_MENU, MESSAGE } from './src/shared/constants.js';
-import { createLogger } from './src/shared/logger.js';
+import { createLogger, setDebugEnabled } from './src/shared/logger.js';
 import { parseUrl } from './src/shared/url-utils.js';
 import { SettingsStore } from './src/background/settings-store.js';
 import { SiteRulesStore } from './src/background/site-rules.js';
@@ -20,6 +20,18 @@ import {
 } from './src/background/tab-out.js';
 
 const log = createLogger('bg');
+
+// DEBUG 开关：在 service worker 控制台执行 chrome.storage.local.set({ debug: 1 })
+// 即可实时打开 background 侧的 debug 日志（无需重载扩展）。
+chrome.storage.local.get('debug').then(
+  ({ debug }) => setDebugEnabled(debug === 1 || debug === true),
+  () => {},
+);
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== 'local' || !changes.debug) return;
+  const next = changes.debug.newValue;
+  setDebugEnabled(next === 1 || next === true);
+});
 
 const settings = new SettingsStore();
 const siteRules = new SiteRulesStore();
@@ -63,6 +75,9 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
 chrome.runtime.onStartup.addListener(() => {
   updateTabOutBadge(settings).catch(() => {});
+  // 旧版本把预加载窗口 ID 存在 storage.local 里（跨浏览器重启保留），而窗口 ID
+  // 只在会话内有效。现在已改用 storage.session，这里顺手清掉遗留的脏数据。
+  chrome.storage.local.remove(['wpPreloadWindowId', 'wpPreloadWindowIds']).catch(() => {});
 });
 
 chrome.storage.onChanged.addListener((changes, areaName) => {

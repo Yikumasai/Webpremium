@@ -7,6 +7,15 @@ const log = createLogger('preload-window');
 const STORAGE_KEY_WINDOW_ID = 'wpPreloadWindowId';
 const STORAGE_KEY_WINDOW_IDS = 'wpPreloadWindowIds';
 
+// 预加载窗口 ID 只在当前浏览器会话内有效：Chrome 的窗口 ID 是会话内计数器分配的，
+// 浏览器重启后会从很小的数字重新开始。如果把它存进 storage.local（跨重启保留），
+// 下次启动时这个 ID 极可能正好落在用户真实的窗口上 —— 那个窗口就会被误认成预加载
+// 窗口：被最小化、被 clearAll 清空标签页，而且会被智能去重整窗口跳过（isExcludedWindowId
+// 命中），表现就是"主窗口里一直打开重复标签页且不会自动关闭"。
+// storage.session 的生命周期正好等于一个浏览器会话，与窗口 ID 的有效期一致；
+// 同时它也能跨 service worker 重启保留，满足 MV3 下复用预加载窗口的需要。
+const windowIdStore = () => chrome.storage.session;
+
 export class PreloadWindow {
   constructor() {
     this.windowId = null;
@@ -241,11 +250,19 @@ export class PreloadWindow {
     const aliveWindows = [];
     for (const id of windowIds) {
       const win = await chrome.windows.get(id, { populate: true }).catch(() => null);
-      if (win?.id != null) aliveWindows.push(win);
+      if (win?.id == null) continue;
+      // 双重保险：即使 ID 因为任何原因指到了别的窗口，也绝不把用户的正常窗口
+      // 当成预加载窗口 —— 那会导致它被最小化、被 clearAll 清空标签页。
+      // 最坏情况只是多留一个隐藏小窗口，远好过动到用户的窗口。
+      if (!hasPreloadWindowGeometry(win)) {
+        log.warn('记录的预加载窗口不像预加载窗口，已忽略', win.id);
+        continue;
+      }
+      aliveWindows.push(win);
     }
 
     if (aliveWindows.length === 0) {
-      await chrome.storage.local.remove([STORAGE_KEY_WINDOW_ID, STORAGE_KEY_WINDOW_IDS]);
+      await windowIdStore().remove([STORAGE_KEY_WINDOW_ID, STORAGE_KEY_WINDOW_IDS]);
       return null;
     }
 
@@ -280,7 +297,7 @@ export class PreloadWindow {
     await Promise.all(
       candidates.slice(1).map((win) => chrome.windows.remove(win.id).catch(() => {})),
     );
-    await chrome.storage.local.set({
+    await windowIdStore().set({
       [STORAGE_KEY_WINDOW_ID]: keep.id,
       [STORAGE_KEY_WINDOW_IDS]: [keep.id],
     });
@@ -306,7 +323,7 @@ export class PreloadWindow {
     await Promise.all(
       duplicates.map((win) => chrome.windows.remove(win.id).catch(() => {})),
     );
-    await chrome.storage.local.set({
+    await windowIdStore().set({
       [STORAGE_KEY_WINDOW_ID]: keepWindowId,
       [STORAGE_KEY_WINDOW_IDS]: [keepWindowId],
     });
@@ -320,7 +337,7 @@ export class PreloadWindow {
   }
 
   async _storedWindowIds() {
-    const stored = await chrome.storage.local
+    const stored = await windowIdStore()
       .get([STORAGE_KEY_WINDOW_ID, STORAGE_KEY_WINDOW_IDS])
       .catch(() => ({}));
     const ids = new Set();
@@ -337,7 +354,7 @@ export class PreloadWindow {
     if (!Number.isInteger(windowId)) return;
     const ids = new Set(await this._storedWindowIds());
     ids.add(windowId);
-    await chrome.storage.local.set({
+    await windowIdStore().set({
       [STORAGE_KEY_WINDOW_ID]: windowId,
       [STORAGE_KEY_WINDOW_IDS]: [...ids],
     });
@@ -347,7 +364,7 @@ export class PreloadWindow {
     const ids = new Set(await this._storedWindowIds());
     ids.delete(windowId);
     const next = [...ids];
-    await chrome.storage.local.set({
+    await windowIdStore().set({
       [STORAGE_KEY_WINDOW_ID]: next[0] ?? null,
       [STORAGE_KEY_WINDOW_IDS]: next,
     });
@@ -365,8 +382,13 @@ function nonBlankTabCount(win) {
 
 function isLikelyOrphanBlankPreloadWindow(win) {
   const tabs = win?.tabs || [];
-  if (win?.type !== PRELOAD_WINDOW_OPTS.type) return false;
   if (tabs.length !== 1 || !isBlankTab(tabs[0])) return false;
+  return hasPreloadWindowGeometry(win);
+}
+
+/** 窗口的类型与几何尺寸是否符合预加载窗口的特征（用户的正常窗口不会这么小）。 */
+function hasPreloadWindowGeometry(win) {
+  if (win?.type !== PRELOAD_WINDOW_OPTS.type) return false;
 
   const width = typeof win.width === 'number' ? win.width : PRELOAD_WINDOW_OPTS.width;
   const height = typeof win.height === 'number' ? win.height : PRELOAD_WINDOW_OPTS.height;
