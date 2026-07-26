@@ -138,6 +138,47 @@ export const TRACKING_PARAMS = new Set([
   'from_source', 'from_spmid', 'vd_source',
 ]);
 
+/**
+ * 站点级 URL 归一规则。
+ *
+ * 有些站点同一份内容会有多个网址，差别只在会话/来源参数上。例如下面三个百度搜索
+ * 结果页是同一页内容：
+ *   /s?wd=X&rqid=91f07d000002e6bc&rsf=8f44c761...
+ *   /s?wd=X&rqid=c1fc55400002f705&rsf=523d2ed0...
+ *   /s?wd=X&from=super&cl=3&hisfilter=1
+ * 这类参数名各站各样（rqid / from / cl / hisfilter …），靠通用的 TRACKING_PARAMS
+ * 黑名单穷举不完。所以对这些站点反过来做：用白名单只保留决定内容的参数。
+ *
+ * 字段含义：
+ *   hosts —— 与 canonicalizeUrl 归一后的主机名比较（已小写、已去 www.）
+ *   paths —— 与归一后的路径比较（已去末尾斜杠，故 '/' 等价于 ''）
+ *   keep  —— 参数白名单，小写比较；不在其中的参数一律丢弃
+ *   alias —— 同义参数名映射到白名单里的那个（如百度的 word 等价于 wd）
+ *
+ * 新增规则的原则：宁可少丢一个参数（漏一次跳转）也不要多丢一个 —— 多丢会把不同
+ * 页面判成同一页，跳到错误的标签页。因此这里不收录带复杂筛选条件的站点（电商的
+ * 多维筛选搜索等），那类页面的有效参数很难穷举。
+ */
+export const URL_QUERY_RULES = Object.freeze([
+  // 搜索引擎：查询词 + 分页 + 垂类/筛选 决定内容，其余都是会话与来源标记
+  { hosts: ['baidu.com'], paths: ['/s', '/baidu'], keep: ['wd', 'pn'], alias: { word: 'wd' } },
+  {
+    hosts: ['google.com', 'google.com.hk'],
+    paths: ['/search'],
+    keep: ['q', 'start', 'tbm', 'tbs', 'udm'],
+  },
+  { hosts: ['bing.com'], paths: ['/search'], keep: ['q', 'first'] },
+  { hosts: ['duckduckgo.com'], paths: ['/'], keep: ['q', 'ia'] },
+  { hosts: ['sogou.com'], paths: ['/web'], keep: ['query', 'page'] },
+  { hosts: ['so.com'], paths: ['/s'], keep: ['q', 'pn'] },
+  { hosts: ['zhihu.com'], paths: ['/search'], keep: ['q', 'type'] },
+  { hosts: ['search.bilibili.com'], paths: ['/all', '/video'], keep: ['keyword', 'page'] },
+  { hosts: ['s.weibo.com'], paths: ['/weibo'], keep: ['q', 'page'] },
+  // 同一个视频的各种带时间点/播放列表/来源参数的链接，指向的是同一个播放页
+  { hosts: ['youtube.com'], paths: ['/watch'], keep: ['v'] },
+  { hosts: ['youtube.com'], paths: ['/results'], keep: ['search_query'] },
+]);
+
 export const INTERNAL_URL_PREFIXES = Object.freeze([
   'chrome://',
   'chrome-extension://',

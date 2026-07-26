@@ -4,6 +4,7 @@ import {
   DOWNLOAD_EXTENSIONS,
   TRACKING_PARAMS,
   TRACKING_PARAM_PREFIXES,
+  URL_QUERY_RULES,
 } from './constants.js';
 
 const SECOND_LEVEL_TLDS = ['co.uk', 'co.jp', 'com.cn', 'com.tw', 'com.au', 'com.hk', 'co.kr'];
@@ -64,6 +65,7 @@ export function isDownloadUrl(input, linkElement = null) {
  *   - 主机小写、去掉 www. 前缀
  *   - 路径去掉末尾斜杠（/a 与 /a/ 是同一页）
  *   - 剔除 utm_/fbclid 等来源标记参数，其余参数排序后比较（参数顺序无意义）
+ *   - 命中 URL_QUERY_RULES 的站点改用参数白名单（如百度搜索只看 wd 与 pn）
  *   - 锚点 #section 丢弃（同一页面内定位）；但 hash 路由 #/path 保留（确实是不同页面）
  *
  * @returns {string} 比较键；非 http(s) URL 返回空串
@@ -75,19 +77,49 @@ export function canonicalizeUrl(input, base) {
 
   const host = url.hostname.toLowerCase().replace(/^www\./, '');
   const port = url.port ? `:${url.port}` : '';
-  const path = url.pathname === '/' ? '' : url.pathname.replace(/\/+$/, '');
-  return `${host}${port}${path}${canonicalQuery(url.searchParams)}${canonicalHash(url.hash)}`;
+  const path = normalizePath(url.pathname);
+  const query = canonicalQuery(url.searchParams, host, path);
+  return `${host}${port}${path}${query}${canonicalHash(url.hash)}`;
 }
 
-function canonicalQuery(searchParams) {
+function normalizePath(pathname) {
+  return pathname === '/' ? '' : pathname.replace(/\/+$/, '');
+}
+
+function canonicalQuery(searchParams, host, path) {
+  const rule = queryRuleFor(host, path);
   const pairs = [];
-  for (const [key, value] of searchParams) {
-    if (isTrackingParam(key)) continue;
-    pairs.push([key, value]);
+  for (const [rawKey, value] of searchParams) {
+    if (rule) {
+      // 白名单模式：只留下决定内容的参数，参数名一并归一（含同义名映射）
+      const key = rule.alias?.[rawKey.toLowerCase()] || rawKey.toLowerCase();
+      if (!rule.keep.includes(key)) continue;
+      pairs.push([key, value]);
+    } else {
+      // 默认模式：只剔除已知的来源标记参数，其余保持原样（参数名区分大小写）
+      if (isTrackingParam(rawKey)) continue;
+      pairs.push([rawKey, value]);
+    }
   }
   if (pairs.length === 0) return '';
   pairs.sort((a, b) => (a[0] === b[0] ? compare(a[1], b[1]) : compare(a[0], b[0])));
-  return `?${pairs.map(([k, v]) => `${k}=${v}`).join('&')}`;
+  // 重新编码后再拼：searchParams 迭代出来的是解码值，直接拼会让 ?a=1%26b%3D2
+  // 和 ?a=1&b=2 生成同一个键（把两个不同页面判成同一页）。
+  // 顺带也统一了 + 与 %20、以及 %2f 与 %2F 这类编码差异。
+  return `?${pairs.map(([k, v]) => `${enc(k)}=${enc(v)}`).join('&')}`;
+}
+
+function enc(value) {
+  return encodeURIComponent(value);
+}
+
+function queryRuleFor(host, path) {
+  return (
+    URL_QUERY_RULES.find(
+      (rule) =>
+        rule.hosts.includes(host) && rule.paths.some((p) => normalizePath(p) === path),
+    ) || null
+  );
 }
 
 function compare(a, b) {
