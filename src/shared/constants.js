@@ -23,6 +23,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
  */
 export const DEFAULT_SITE_RULES = Object.freeze({
   'douyin.com': { enabled: false },
+  'google.com': { enabled: false },
 });
 
 export const SETTINGS_KEYS = Object.freeze(Object.keys(DEFAULT_SETTINGS));
