@@ -21,6 +21,7 @@ export function createMessageHandler({
   stats,
   preloadWindow,
   tabTracker,
+  tabIndex,
 }) {
   const handlers = {
     [MESSAGE.GET_SETTINGS]: async () => ({
@@ -96,14 +97,13 @@ export function createMessageHandler({
       return { success: true, tabId };
     },
 
-    [MESSAGE.FIND_EXISTING_TAB]: async (req, sender) => {
-      if (!isHttpUrl(req.url)) return { success: false, error: '无效的URL' };
-      const tab = await findExistingTabByUrl(req.url, {
-        windowId: sender?.tab?.windowId,
-        excludeTabId: sender?.tab?.id,
-      });
-      return { success: true, tab: summarizeTab(tab) };
-    },
+    // content script 启动时拉一次"当前窗口已打开页面"的快照；
+    // 后续变化由 TabIndex 主动推送（见 tab-index.js 里对竞态的说明）。
+    [MESSAGE.GET_OPEN_TABS]: async (_req, sender) => ({
+      success: true,
+      entries: await tabIndex.entriesForWindow(sender?.tab?.windowId),
+      yourTabId: sender?.tab?.id ?? null,
+    }),
 
     [MESSAGE.ACTIVATE_EXISTING_TAB]: async (req, sender) => {
       if (!isHttpUrl(req.url)) return { success: false, error: '无效的URL' };

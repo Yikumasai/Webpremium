@@ -62,8 +62,9 @@ export const MESSAGE = Object.freeze({
   SETTINGS_UPDATED: 'settingsUpdated',
   CREATE_BACKGROUND_TAB: 'createBackgroundTab',
   ACTIVATE_TAB: 'activateTab',
-  FIND_EXISTING_TAB: 'findExistingTab',
   ACTIVATE_EXISTING_TAB: 'activateExistingTab',
+  GET_OPEN_TABS: 'getOpenTabs',
+  OPEN_TABS_CHANGED: 'openTabsChanged',
   CLOSE_TAB: 'closeTab',
   TAB_CLOSED: 'tabClosed',
   UPDATE_PRELOAD_LIST: 'updatePreloadList',
@@ -111,6 +112,31 @@ export const PRELOAD_WINDOW_TOLERANCE = Object.freeze({
   left: 120,
   top: 120,
 });
+
+/**
+ * 判定"同一个网页"时应当忽略的查询参数（广告/统计来源标记）。
+ * 前缀匹配 + 精确匹配两张表，命中即从规范化 URL 中剔除。
+ */
+export const TRACKING_PARAM_PREFIXES = Object.freeze([
+  'utm_',
+  'spm_',
+  'ga_',
+  'mc_',
+  'pk_',
+  'matomo_',
+  'hsa_',
+  'vero_',
+]);
+
+// 只收录含义明确的追踪参数。宁可漏掉一个（少一次跳转）也不要误删真实参数
+// （会把不同页面判成同一页，跳到错误的标签页）—— 例如 ref 在部分站点表示分支/版本，
+// 因此不在此列。
+export const TRACKING_PARAMS = new Set([
+  'fbclid', 'gclid', 'dclid', 'gbraid', 'wbraid', 'msclkid', 'yclid', 'twclid', 'ttclid',
+  'igshid', 'mkt_tok', '_hsenc', '_hsmi', 'ref_src', 'ref_url',
+  'spm', 'scm', 'share_source', 'share_medium', 'share_plat',
+  'from_source', 'from_spmid', 'vd_source',
+]);
 
 export const INTERNAL_URL_PREFIXES = Object.freeze([
   'chrome://',

@@ -8,6 +8,7 @@ import { SettingsStore } from './src/background/settings-store.js';
 import { SiteRulesStore } from './src/background/site-rules.js';
 import { StatsStore } from './src/background/stats.js';
 import { TabTracker } from './src/background/tab-tracker.js';
+import { TabIndex } from './src/background/tab-index.js';
 import { PreloadWindow } from './src/background/preload-window.js';
 import { createMessageHandler } from './src/background/router.js';
 import { findExistingTabByUrl } from './src/background/tab-deduper.js';
@@ -24,6 +25,11 @@ const siteRules = new SiteRulesStore();
 const stats = new StatsStore();
 const tabTracker = new TabTracker();
 const preloadWindow = new PreloadWindow();
+// 隐藏的预加载窗口不算"用户已打开的页面"，从索引里排除
+const tabIndex = new TabIndex({
+  isExcludedWindowId: (windowId) => windowId === preloadWindow.windowId,
+});
+tabIndex.start();
 
 // 启动期间并行预热 store
 Promise.all([siteRules.ready(), stats.ready()]).catch((err) =>
@@ -36,6 +42,7 @@ const handleMessage = createMessageHandler({
   stats,
   preloadWindow,
   tabTracker,
+  tabIndex,
 });
 
 chrome.runtime.onMessage.addListener(handleMessage);

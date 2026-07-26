@@ -1,12 +1,13 @@
-// content script 的逻辑入口：编排 settings/indicator/preloader/link-tracker
+// content script 的逻辑入口：编排 settings/indicator/preloader/link-tracker/open-tabs
 
 import { MESSAGE } from '../shared/constants.js';
 import { createLogger } from '../shared/logger.js';
-import { isPreloadableLink } from '../shared/url-utils.js';
+import { isDedupCandidateLink, isPreloadableLink } from '../shared/url-utils.js';
 import { ContentSettings } from './settings.js';
 import { Indicator } from './indicator.js';
 import { Preloader } from './preloader.js';
 import { LinkTracker } from './link-tracker.js';
+import { OpenTabs } from './open-tabs.js';
 import { shouldPreloadOnCurrentNetwork } from './network-aware.js';
 
 const log = createLogger('content');
@@ -20,32 +21,38 @@ export async function run() {
   const indicator = new Indicator({ enabled: settings.values.showIndicator });
   const preloader = new Preloader({ indicator });
   const linkTracker = new LinkTracker();
+  const openTabs = new OpenTabs();
 
-  let active = false;
+  // 预加载与智能去重是两个互相独立的开关，各自维护自己的启用状态：
+  // 关掉预加载（或在本站禁用预加载）不应该顺带让去重失效。
+  let preloadActive = false;
+  let dedupActive = false;
+  let clickAttached = false;
   let hoverTimer = null;
   let nearbyTimer = null;
   let lastNearbyHrefs = [];
-  const existingTabHrefs = new Set();
 
   // 当前 tab 刚被创建/刷新，先告知 background 清掉旧的预加载残留
   chrome.runtime
     .sendMessage({ action: MESSAGE.CLEAR_MY_PRELOADS })
     .catch(() => {});
 
-  await activateIfEnabled();
-
-  // 监听 site rule 变化、togglePreload、tabClosed
+  // 先挂监听再激活，避免激活期间到达的索引推送被漏掉
+  // 监听 site rule 变化、togglePreload、tabClosed、已打开标签页索引推送
   chrome.runtime.onMessage.addListener((req) => {
     switch (req?.action) {
       case MESSAGE.TOGGLE_PRELOAD:
         settings.values.preloadEnabled = req.enabled;
-        activateIfEnabled();
+        void refreshActivation();
         break;
       case MESSAGE.SITE_RULE_CHANGED:
-        activateIfEnabled();
+        void refreshActivation();
         break;
       case MESSAGE.TAB_CLOSED:
         if (req.tabId != null) preloader.forgetActivatedTab(req.tabId);
+        break;
+      case MESSAGE.OPEN_TABS_CHANGED:
+        if (dedupActive) openTabs.apply(req);
         break;
     }
   });
@@ -53,40 +60,68 @@ export async function run() {
   settings.addEventListener('change', (event) => {
     const changed = event.detail || {};
     if ('showIndicator' in changed) indicator.setEnabled(changed.showIndicator);
-    if ('preloadEnabled' in changed) activateIfEnabled();
-    if (changed.smartTabDedup === false) existingTabHrefs.clear();
+    if ('preloadEnabled' in changed || 'smartTabDedup' in changed) void refreshActivation();
   });
 
-  async function activateIfEnabled() {
+  await refreshActivation();
+
+  async function refreshActivation() {
+    await refreshPreloadActivation();
+    refreshDedupActivation();
+    syncClickListener();
+  }
+
+  async function refreshPreloadActivation() {
     const allow = settings.values.preloadEnabled && (await isCurrentSiteEnabled());
-    if (allow && !active) {
-      attachListeners();
+    if (allow && !preloadActive) {
+      attachPreloadListeners();
       linkTracker.start();
-      active = true;
-      log.debug('已启用');
-    } else if (!allow && active) {
-      detachListeners();
+      preloadActive = true;
+      log.debug('预加载已启用');
+    } else if (!allow && preloadActive) {
+      detachPreloadListeners();
       linkTracker.stop();
       preloader.clearAll();
-      active = false;
-      log.debug('已禁用');
+      preloadActive = false;
+      log.debug('预加载已禁用');
     }
   }
 
-  function attachListeners() {
+  function refreshDedupActivation() {
+    const allow = settings.values.smartTabDedup !== false;
+    if (allow === dedupActive) return;
+    dedupActive = allow;
+    if (allow) {
+      // sync 期间用户可能又关掉了开关，回来时再确认一次
+      void openTabs.sync().then(() => {
+        if (!dedupActive) openTabs.clear();
+      });
+      log.debug('智能去重已启用');
+    } else {
+      openTabs.clear();
+      log.debug('智能去重已禁用');
+    }
+  }
+
+  /** click 监听由两个功能共用，任一启用就挂上。 */
+  function syncClickListener() {
+    const needed = preloadActive || dedupActive;
+    if (needed === clickAttached) return;
+    clickAttached = needed;
+    if (needed) document.addEventListener('click', onClick, true);
+    else document.removeEventListener('click', onClick, true);
+  }
+
+  function attachPreloadListeners() {
     document.addEventListener('mouseover', onMouseOver, true);
     document.addEventListener('mouseout', onMouseOut, true);
-    document.addEventListener('mousedown', onMouseDown, true);
-    document.addEventListener('click', onClick, true);
     window.addEventListener('mousemove', scheduleNearby, { passive: true });
     window.addEventListener('scroll', scheduleNearby, { passive: true });
   }
 
-  function detachListeners() {
+  function detachPreloadListeners() {
     document.removeEventListener('mouseover', onMouseOver, true);
     document.removeEventListener('mouseout', onMouseOut, true);
-    document.removeEventListener('mousedown', onMouseDown, true);
-    document.removeEventListener('click', onClick, true);
     window.removeEventListener('mousemove', scheduleNearby);
     window.removeEventListener('scroll', scheduleNearby);
     if (hoverTimer) clearTimeout(hoverTimer);
@@ -96,7 +131,7 @@ export async function run() {
   }
 
   function onMouseOver(event) {
-    const link = event.target.closest('a[href]');
+    const link = closestLink(event);
     if (!link || !isPreloadableLink(link.href, link, window.location.href)) return;
     if (preloader.has(link.href)) {
       // 再次 hover 到已预加载的链接 -> 刷新 LRU，避免被淘汰
@@ -117,40 +152,45 @@ export async function run() {
     }
   }
 
-  function onMouseDown(event) {
-    const link = event.target.closest('a[href]');
-    if (!link || !isPreloadableLink(link.href, link, window.location.href)) return;
-    if (settings.values.smartTabDedup === false || !isDedupNavigationClick(event, link)) {
-      return;
-    }
-    void findExistingTab(link.href).then((tab) => {
-      if (tab) rememberExistingTab(link.href);
-      else forgetExistingTab(link.href);
-    });
-  }
-
+  /**
+   * 点击处理分两级，都必须在同步阶段决定是否 preventDefault：
+   *   1. 目标页已在当前窗口打开 -> 拦下点击，跳转到那个标签页
+   *   2. 目标页已预加载        -> 拦下点击，激活预加载标签页
+   * 两者都不成立时完全放行 —— 不能推测性地 preventDefault，否则会把 SPA 的
+   * 客户端路由降级成整页刷新，并且吞掉站点自己的点击处理。
+   */
   function onClick(event) {
-    const link = event.target.closest('a[href]');
-    if (!link || !isPreloadableLink(link.href, link, window.location.href)) return;
+    const link = closestLink(event);
+    if (!link) return;
+    const href = link.href;
 
     if (
-      settings.values.smartTabDedup !== false &&
+      dedupActive &&
       isDedupNavigationClick(event, link) &&
-      (existingTabHrefs.has(link.href) || isSelfNavigationClick(event, link))
+      isDedupCandidateLink(href, link, window.location.href) &&
+      openTabs.has(href)
     ) {
       event.preventDefault();
       event.stopPropagation();
-      void openExistingOrPreloaded(link.href).then((ok) => {
-        if (!ok) navigateToLink(link);
+      void activateExistingTab(href).then((ok) => {
+        if (ok) {
+          // 同一个页面已经有真实标签页了，顺手回收为它做的预加载
+          if (preloader.has(href)) void preloader.remove(href);
+        } else {
+          openTabs.forget(href); // 索引已过期，别让下一次点击继续被误拦
+          navigateToLink(link);
+        }
         notifyPopupSoon();
       });
       return;
     }
 
-    if (!preloader.isLoaded(link.href)) return;
+    if (!preloadActive) return;
+    if (!isPreloadableLink(href, link, window.location.href)) return;
+    if (!preloader.isLoaded(href)) return;
     event.preventDefault();
     event.stopPropagation();
-    void preloader.openPreloaded(link.href).then((ok) => {
+    void preloader.openPreloaded(href).then((ok) => {
       if (!ok) navigateToLink(link);
       notifyPopupSoon();
     });
@@ -158,13 +198,10 @@ export async function run() {
 
   async function tryPreload(link) {
     if (preloader.has(link.href)) return;
-    const existingTab = await findExistingTab(link.href);
-    if (existingTab) {
-      rememberExistingTab(link.href);
+    if (dedupActive && openTabs.has(link.href)) {
       log.debug('目标已在当前窗口打开，跳过预加载', link.href);
       return;
     }
-    forgetExistingTab(link.href);
 
     if (!shouldPreloadOnCurrentNetwork(settings.values)) {
       log.debug('网络不佳，跳过', link.href);
@@ -182,8 +219,7 @@ export async function run() {
 
     const useTab = settings.values.preloadMode === 'hidden-tab';
     if (useTab) {
-      const result = await preloader.preloadWithBackgroundTab(link.href, link);
-      if (result?.skippedExistingTab) rememberExistingTab(link.href);
+      await preloader.preloadWithBackgroundTab(link.href, link);
     } else {
       preloader.preloadWithIframe(link.href, link);
     }
@@ -240,29 +276,6 @@ export async function run() {
     }
   }
 
-  async function openExistingOrPreloaded(href) {
-    if (await activateExistingTab(href)) {
-      rememberExistingTab(href);
-      return true;
-    }
-    forgetExistingTab(href);
-    if (preloader.isLoaded(href)) return preloader.openPreloaded(href);
-    return false;
-  }
-
-  async function findExistingTab(href) {
-    if (settings.values.smartTabDedup === false) return null;
-    try {
-      const res = await chrome.runtime.sendMessage({
-        action: MESSAGE.FIND_EXISTING_TAB,
-        url: href,
-      });
-      return res?.success ? res.tab || null : null;
-    } catch {
-      return null;
-    }
-  }
-
   async function activateExistingTab(href) {
     try {
       const res = await chrome.runtime.sendMessage({
@@ -274,14 +287,6 @@ export async function run() {
       log.warn('激活已有标签页失败', err?.message);
       return false;
     }
-  }
-
-  function rememberExistingTab(href) {
-    existingTabHrefs.add(href);
-  }
-
-  function forgetExistingTab(href) {
-    existingTabHrefs.delete(href);
   }
 
   async function isCurrentSiteEnabled() {
@@ -297,12 +302,18 @@ export async function run() {
   }
 }
 
+function closestLink(event) {
+  const target = event.target;
+  return typeof target?.closest === 'function' ? target.closest('a[href]') : null;
+}
+
 function sameOrder(a, b) {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i += 1) if (a[i] !== b[i]) return false;
   return true;
 }
 
+/** 普通左键点击（无修饰键），且 target 是当前页或新标签页 —— 只有这类点击才拦。 */
 function isDedupNavigationClick(event, link) {
   const target = (link.getAttribute('target') || '').toLowerCase();
   return (
@@ -313,11 +324,6 @@ function isDedupNavigationClick(event, link) {
     !event.altKey &&
     (!target || target === '_self' || target === '_blank')
   );
-}
-
-function isSelfNavigationClick(event, link) {
-  const target = (link.getAttribute('target') || '').toLowerCase();
-  return isDedupNavigationClick(event, link) && (!target || target === '_self');
 }
 
 function navigateToLink(link) {
