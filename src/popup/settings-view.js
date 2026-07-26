@@ -46,6 +46,7 @@ export class SettingsView {
       showIndicator: $('showIndicator'),
       mutePreload: $('mutePreload'),
       smartTabDedup: $('smartTabDedup'),
+      searchPageNativeNav: $('searchPageNativeNav'),
       shortcutsEnabled: $('shortcutsEnabled'),
       shortcutStatus: $('shortcutStatus'),
       checkShortcutConflicts: $('checkShortcutConflicts'),
@@ -98,6 +99,7 @@ export class SettingsView {
     this.els.showIndicator.checked = !!s.showIndicator;
     this.els.mutePreload.checked = s.mutePreload !== false;
     this.els.smartTabDedup.checked = s.smartTabDedup !== false;
+    this.els.searchPageNativeNav.checked = s.searchPageNativeNav !== false;
     this.els.shortcutsEnabled.checked = s.shortcutsEnabled === true;
     this.els.tabOutEnabled.checked = s.tabOutEnabled === true;
     this._renderStatus();
@@ -136,6 +138,7 @@ export class SettingsView {
     this.els.showIndicator.addEventListener('change', () => this._scheduleSave());
     this.els.mutePreload.addEventListener('change', () => this._scheduleSave());
     this.els.smartTabDedup.addEventListener('change', () => this._scheduleSave());
+    this.els.searchPageNativeNav.addEventListener('change', () => this._scheduleSave());
     this.els.shortcutsEnabled.addEventListener('change', () => {
       this._renderShortcutStatus({ state: 'idle' });
       this._checkShortcutConflicts({ silent: false });
@@ -190,6 +193,7 @@ export class SettingsView {
       showIndicator: this.els.showIndicator.checked,
       mutePreload: this.els.mutePreload.checked,
       smartTabDedup: this.els.smartTabDedup.checked,
+      searchPageNativeNav: this.els.searchPageNativeNav.checked,
       shortcutsEnabled: this.els.shortcutsEnabled.checked,
       tabOutEnabled: this.els.tabOutEnabled.checked,
       darkMode: this.settings.darkMode,

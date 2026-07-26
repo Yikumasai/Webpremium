@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   showIndicator: true,
   mutePreload: true,
   smartTabDedup: true,
+  searchPageNativeNav: true,
   tabOutEnabled: false,
   shortcutsEnabled: false,
 });
@@ -160,23 +161,36 @@ export const TRACKING_PARAMS = new Set([
  * 多维筛选搜索等），那类页面的有效参数很难穷举。
  */
 export const URL_QUERY_RULES = Object.freeze([
-  // 搜索引擎：查询词 + 分页 + 垂类/筛选 决定内容，其余都是会话与来源标记
-  { hosts: ['baidu.com'], paths: ['/s', '/baidu'], keep: ['wd', 'pn'], alias: { word: 'wd' } },
+  // 搜索引擎：查询词 + 分页 + 垂类/筛选 决定内容，其余都是会话与来源标记。
+  // isSearch 标记搜索结果页，供 searchPageNativeNav 使用（见 isSearchResultPage）。
+  {
+    hosts: ['baidu.com'],
+    paths: ['/s', '/baidu'],
+    keep: ['wd', 'pn'],
+    alias: { word: 'wd' },
+    isSearch: true,
+  },
   {
     hosts: ['google.com', 'google.com.hk'],
     paths: ['/search'],
     keep: ['q', 'start', 'tbm', 'tbs', 'udm'],
+    isSearch: true,
   },
-  { hosts: ['bing.com'], paths: ['/search'], keep: ['q', 'first'] },
-  { hosts: ['duckduckgo.com'], paths: ['/'], keep: ['q', 'ia'] },
-  { hosts: ['sogou.com'], paths: ['/web'], keep: ['query', 'page'] },
-  { hosts: ['so.com'], paths: ['/s'], keep: ['q', 'pn'] },
-  { hosts: ['zhihu.com'], paths: ['/search'], keep: ['q', 'type'] },
-  { hosts: ['search.bilibili.com'], paths: ['/all', '/video'], keep: ['keyword', 'page'] },
-  { hosts: ['s.weibo.com'], paths: ['/weibo'], keep: ['q', 'page'] },
+  { hosts: ['bing.com'], paths: ['/search'], keep: ['q', 'first'], isSearch: true },
+  { hosts: ['duckduckgo.com'], paths: ['/'], keep: ['q', 'ia'], isSearch: true },
+  { hosts: ['sogou.com'], paths: ['/web'], keep: ['query', 'page'], isSearch: true },
+  { hosts: ['so.com'], paths: ['/s'], keep: ['q', 'pn'], isSearch: true },
+  { hosts: ['zhihu.com'], paths: ['/search'], keep: ['q', 'type'], isSearch: true },
+  {
+    hosts: ['search.bilibili.com'],
+    paths: ['/all', '/video'],
+    keep: ['keyword', 'page'],
+    isSearch: true,
+  },
+  { hosts: ['s.weibo.com'], paths: ['/weibo'], keep: ['q', 'page'], isSearch: true },
+  { hosts: ['youtube.com'], paths: ['/results'], keep: ['search_query'], isSearch: true },
   // 同一个视频的各种带时间点/播放列表/来源参数的链接，指向的是同一个播放页
   { hosts: ['youtube.com'], paths: ['/watch'], keep: ['v'] },
-  { hosts: ['youtube.com'], paths: ['/results'], keep: ['search_query'] },
 ]);
 
 export const INTERNAL_URL_PREFIXES = Object.freeze([
