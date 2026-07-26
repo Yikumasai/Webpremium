@@ -386,9 +386,21 @@ function isLikelyOrphanBlankPreloadWindow(win) {
   return hasPreloadWindowGeometry(win);
 }
 
-/** 窗口的类型与几何尺寸是否符合预加载窗口的特征（用户的正常窗口不会这么小）。 */
+/**
+ * 窗口的类型与几何尺寸是否符合预加载窗口的特征（用户的正常窗口不会这么小）。
+ *
+ * 注意：最小化窗口的 width/height/left/top 在部分平台上不可靠 —— 可能上报 0x0、
+ * 负坐标或任务栏附近的坐标。我们创建预加载窗口后总是立刻最小化它，而 Chrome 的
+ * 窗口 ID 在同一个会话内是单调递增、不会复用的；storage.session 里记录的 ID 又
+ * 只在当前会话有效。因此一个最小化的 normal 窗口如果类型匹配，几乎必然是我们的
+ * 预加载窗口，直接放行，避免因为几何尺寸不匹配而漏认 —— 漏认会导致 _ensureWindow
+ * 落到新建分支，从而在后台堆积出第二个预加载窗口。
+ */
 function hasPreloadWindowGeometry(win) {
   if (win?.type !== PRELOAD_WINDOW_OPTS.type) return false;
+
+  // 最小化窗口的几何尺寸不可靠，跳过几何校验，仅凭类型判定。
+  if (win?.state === 'minimized') return true;
 
   const width = typeof win.width === 'number' ? win.width : PRELOAD_WINDOW_OPTS.width;
   const height = typeof win.height === 'number' ? win.height : PRELOAD_WINDOW_OPTS.height;
