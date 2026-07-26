@@ -102,7 +102,11 @@ Webpremium là một tiện ích mở rộng Chrome mang tính cách mạng, man
 
 ## 📦 Cài Đặt
 
-### Phương Pháp 1: Cài Đặt Ở Chế Độ Nhà Phát Triển
+### Phương Pháp 1: Chrome Web Store
+
+Truy cập trang [Chrome Web Store](https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj) và nhấp "Thêm vào Chrome" để cài đặt chỉ với một cú nhấp chuột.
+
+### Phương Pháp 2: Cài Đặt Ở Chế Độ Nhà Phát Triển
 
 1. **Tải mã nguồn**
    Tải từ trang [releases](https://github.com/Yikumasai/Webpremium/releases)
@@ -127,9 +131,6 @@ Webpremium là một tiện ích mở rộng Chrome mang tính cách mạng, man
 5. **Hoàn tất cài đặt**
    - Biểu tượng tiện ích sẽ xuất hiện trên thanh công cụ trình duyệt
    - Nhấp vào biểu tượng để mở bảng cài đặt
-
-### Phương Pháp 2: Chrome Web Store
-> Sắp ra mắt
 
 ---
 

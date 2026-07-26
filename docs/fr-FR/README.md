@@ -103,7 +103,11 @@ Lorsque vous survolez un lien avec votre souris, l'extension ouvre la page à l'
 
 ## 📦 Installation
 
-### Méthode 1 : Installation en Mode Développeur
+### Méthode 1 : Chrome Web Store
+
+Rendez-vous sur la page [Chrome Web Store](https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj) et cliquez sur « Ajouter à Chrome » pour l'installer en un clic.
+
+### Méthode 2 : Installation en Mode Développeur
 
 1. **Télécharger le code source**
    Télécharger depuis la page [releases](https://github.com/Yikumasai/Webpremium/releases)
@@ -128,9 +132,6 @@ Lorsque vous survolez un lien avec votre souris, l'extension ouvre la page à l'
 5. **Terminer l'installation**
    - L'icône de l'extension apparaîtra dans la barre d'outils du navigateur
    - Cliquez sur l'icône pour ouvrir le panneau de configuration
-
-### Méthode 2 : Chrome Web Store
-> À venir
 
 ---
 

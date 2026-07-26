@@ -102,7 +102,11 @@ Webpremium 是一款革命性的 Chrome 瀏覽器擴充功能，透過智慧預�
 
 ## 📦 安裝方法
 
-### 方法一：開發者模式安裝
+### 方法一：Chrome 線上應用程式商店
+
+前往 [Chrome 線上應用程式商店](https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj) 頁面，點擊「加到 Chrome」即可一鍵安裝。
+
+### 方法二：開發者模式安裝
 
 1. **下載原始碼**
    在 [release](https://github.com/Yikumasai/Webpremium/releases) 頁面下載
@@ -127,9 +131,6 @@ Webpremium 是一款革命性的 Chrome 瀏覽器擴充功能，透過智慧預�
 5. **完成安裝**
    - 擴充功能圖示會出現在瀏覽器工具列
    - 點擊圖示即可開啟設定面板
-
-### 方法二：Chrome 線上應用程式商店
-> 待上架
 
 ---
 

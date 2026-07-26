@@ -102,7 +102,11 @@ Webpremium은 스마트 프리로드 기술을 통해 **제로 지연** 웹 브�
 
 ## 📦 설치 방법
 
-### 방법 1: 개발자 모드로 설치
+### 방법 1: Chrome 웹 스토어
+
+[Chrome 웹 스토어](https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj) 페이지에서 "Chrome에 추가"를 클릭하면 바로 설치됩니다.
+
+### 방법 2: 개발자 모드로 설치
 
 1. **소스 코드 다운로드**
    [release](https://github.com/Yikumasai/Webpremium/releases) 페이지에서 다운로드
@@ -127,9 +131,6 @@ Webpremium은 스마트 프리로드 기술을 통해 **제로 지연** 웹 브�
 5. **설치 완료**
    - 확장 프로그램 아이콘이 브라우저 도구 모음에 나타남
    - 아이콘을 클릭하여 설정 패널 열기
-
-### 방법 2: Chrome 웹 스토어
-> 준비 중
 
 ---
 

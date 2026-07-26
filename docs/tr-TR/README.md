@@ -102,7 +102,11 @@ Webpremium, akıllı ön yükleme teknolojisi ile **sıfır gecikme** web taray�
 
 ## 📦 Kurulum
 
-### Yöntem 1: Geliştirici Modunda Kurulum
+### Yöntem 1: Chrome Web Mağazası
+
+[Chrome Web Mağazası](https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj) sayfasına gidin ve tek tıkla kurmak için "Chrome'a Ekle"ye tıklayın.
+
+### Yöntem 2: Geliştirici Modunda Kurulum
 
 1. **Kaynak kodunu indir**
    [Releases](https://github.com/Yikumasai/Webpremium/releases) sayfasından indir
@@ -127,9 +131,6 @@ Webpremium, akıllı ön yükleme teknolojisi ile **sıfır gecikme** web taray�
 5. **Kurulumu tamamla**
    - Uzantı simgesi tarayıcı araç çubuğunda görünecek
    - Ayarlar panelini açmak için simgeye tıkla
-
-### Yöntem 2: Chrome Web Mağazası
-> Yakında
 
 ---
 

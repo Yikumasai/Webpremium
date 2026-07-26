@@ -102,7 +102,11 @@ Webpremiumは、スマートプリロード技術により**ゼロ遅延**のウ
 
 ## 📦 インストール方法
 
-### 方法1：デベロッパーモードでインストール
+### 方法1：Chrome ウェブストア
+
+[Chrome ウェブストア](https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj)のページにアクセスし、「Chrome に追加」をクリックするだけでインストールできます。
+
+### 方法2：デベロッパーモードでインストール
 
 1. **ソースコードをダウンロード**
    [release](https://github.com/Yikumasai/Webpremium/releases)ページからダウンロード
@@ -127,9 +131,6 @@ Webpremiumは、スマートプリロード技術により**ゼロ遅延**のウ
 5. **インストール完了**
    - 拡張機能アイコンがブラウザツールバーに表示されます
    - アイコンをクリックして設定パネルを開きます
-
-### 方法2：Chrome ウェブストア
-> 準備中
 
 ---
 

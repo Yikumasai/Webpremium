@@ -102,7 +102,11 @@ Webpremium is a revolutionary Chrome extension that achieves a **zero-latency** 
 
 ## 📦 Installation
 
-### Method 1: Developer Mode Installation
+### Method 1: Chrome Web Store
+
+Visit the [Chrome Web Store](https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj) page and click "Add to Chrome" to install in one click.
+
+### Method 2: Developer Mode Installation
 
 1. **Download source code**
    Download from [releases](https://github.com/Yikumasai/Webpremium/releases) page
@@ -127,9 +131,6 @@ Webpremium is a revolutionary Chrome extension that achieves a **zero-latency** 
 5. **Complete installation**
    - Extension icon will appear in browser toolbar
    - Click icon to open settings panel
-
-### Method 2: Chrome Web Store
-> Coming soon
 
 ---
 

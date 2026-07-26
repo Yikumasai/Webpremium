@@ -102,7 +102,11 @@ Webpremium ist eine revolutionäre Chrome-Erweiterung, die durch intelligente Pr
 
 ## 📦 Installation
 
-### Methode 1: Installation im Entwicklermodus
+### Methode 1: Chrome Web Store
+
+Besuchen Sie die [Chrome Web Store](https://chromewebstore.google.com/detail/link-preloader/ajfjclgcglnjglkjgjcenkjjmipddnhj)-Seite und klicken Sie auf "Hinzufügen", um die Erweiterung mit einem Klick zu installieren.
+
+### Methode 2: Installation im Entwicklermodus
 
 1. **Quellcode herunterladen**
    Von der [Release](https://github.com/Yikumasai/Webpremium/releases)-Seite herunterladen
@@ -127,9 +131,6 @@ Webpremium ist eine revolutionäre Chrome-Erweiterung, die durch intelligente Pr
 5. **Installation abschließen**
    - Erweiterungssymbol erscheint in der Browser-Symbolleiste
    - Symbol klicken, um Einstellungspanel zu öffnen
-
-### Methode 2: Chrome Web Store
-> Demnächst verfügbar
 
 ---
 
