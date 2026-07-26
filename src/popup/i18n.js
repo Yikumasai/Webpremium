@@ -26,7 +26,7 @@ const DICT = {
     mutePreloadDesc: '预加载标签页默认静音，避免视频/直播自动播放出声；激活后在地址栏点击可解除静音',
     smartTabDedup: '智能标签页去重与跳转',
     smartTabDedupDesc:
-      '点击链接时，若当前窗口已打开该网页则直接跳转过去而不是重复打开；比对时会忽略 www.、尾斜杠、utm 等来源参数的差异。独立于预加载开关生效',
+      '当前窗口已打开的网页不再重复打开，直接跳转到已有标签页；除点击链接外，window.open、书签、地址栏、外部应用打开的重复页也会被拦下。比对时忽略 www./尾斜杠/utm 等差异。中键与 Ctrl+点击（后台打开）不受影响',
     advancedFeatures: '高级功能',
     tabOutDesc: '开启后新标签页将显示 Tab-out 标签页管理面板，并启用标签数量徽章与收藏右键菜单',
     shortcutsEnabled: '启用快捷键 (Alt+P / Alt+C)',
@@ -146,7 +146,7 @@ const DICT = {
     mutePreloadDesc: 'Preloaded tabs are muted by default to avoid autoplay sound; unmute from the address bar after activation',
     smartTabDedup: 'Smart tab dedupe and jump',
     smartTabDedupDesc:
-      'When a clicked link is already open in this window, jump to that tab instead of opening a duplicate. Ignores www., trailing slashes and utm-style tracking params. Works independently of preloading',
+      'Jump to the tab that already has the page instead of opening a duplicate — covers link clicks plus window.open, bookmarks, the address bar and external apps. Ignores www., trailing slashes and utm-style params. Middle-click and Ctrl+click (background tabs) are left alone',
     advancedFeatures: 'Advanced features',
     tabOutDesc: 'When enabled, new tabs show the Tab-out tab manager, with tab count badge and favorite context menus',
     shortcutsEnabled: 'Enable shortcuts (Alt+P / Alt+C)',

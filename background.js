@@ -9,6 +9,7 @@ import { SiteRulesStore } from './src/background/site-rules.js';
 import { StatsStore } from './src/background/stats.js';
 import { TabTracker } from './src/background/tab-tracker.js';
 import { TabIndex } from './src/background/tab-index.js';
+import { TabGuard } from './src/background/tab-guard.js';
 import { PreloadWindow } from './src/background/preload-window.js';
 import { createMessageHandler } from './src/background/router.js';
 import { findExistingTabByUrl } from './src/background/tab-deduper.js';
@@ -26,10 +27,14 @@ const stats = new StatsStore();
 const tabTracker = new TabTracker();
 const preloadWindow = new PreloadWindow();
 // 隐藏的预加载窗口不算"用户已打开的页面"，从索引里排除
-const tabIndex = new TabIndex({
-  isExcludedWindowId: (windowId) => windowId === preloadWindow.windowId,
-});
+const isPreloadWindowId = (windowId) => windowId === preloadWindow.windowId;
+const tabIndex = new TabIndex({ isExcludedWindowId: isPreloadWindowId });
 tabIndex.start();
+
+// 标签页层面的兜底拦截：window.open / 书签 / 地址栏 / 外部应用打开的重复标签页
+// 都没有 click 事件可拦，只能在这里处理。
+const tabGuard = new TabGuard({ settings, isExcludedWindowId: isPreloadWindowId });
+tabGuard.start();
 
 // 启动期间并行预热 store
 Promise.all([siteRules.ready(), stats.ready()]).catch((err) =>

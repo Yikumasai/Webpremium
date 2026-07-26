@@ -21,15 +21,23 @@ export async function findExistingTabByUrl(url, { windowId, excludeTabId } = {})
 export async function activateExistingTabByUrl(url, opts = {}) {
   const tab = await findExistingTabByUrl(url, opts);
   if (!tab?.id) return null;
+  await activateTabForUrl(tab, url);
+  return tab;
+}
 
-  const anchorUrl = fragmentOnlyTarget(url, tab.url || tab.pendingUrl || '');
+/**
+ * 激活一个已有标签页，作为访问 requestedUrl 的替代。
+ * @param {chrome.tabs.Tab} tab 已经匹配好的目标标签页
+ * @param {string} requestedUrl 用户本来想打开的 URL
+ */
+export async function activateTabForUrl(tab, requestedUrl) {
+  const anchorUrl = fragmentOnlyTarget(requestedUrl, tab.url || tab.pendingUrl || '');
   // 只在"两个 URL 仅差一个锚点"时补上跳转：这是同文档内定位，不会重新加载页面。
   // 其它差异（如查询参数）一律不动 URL，否则会刷新用户已有的标签页、丢掉页面状态。
   await chrome.tabs.update(tab.id, anchorUrl ? { active: true, url: anchorUrl } : { active: true });
   if (tab.windowId != null) {
     await chrome.windows.update(tab.windowId, { focused: true });
   }
-  return tab;
 }
 
 export function summarizeTab(tab) {
